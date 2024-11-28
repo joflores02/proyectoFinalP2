@@ -18,7 +18,7 @@ public class SeleccionAsientosVista extends JFrame {
         panelPrincipal.setLayout(null);
 
         // Crear el primer subpanel con medidas 980x380
-        JPanel subPanel = new JPanel() {
+        JPanel EstructuraAutobusSubPanel = new JPanel() {
             // Sobrescribir el método paintComponent para dibujar en el subpanel
             @Override
             protected void paintComponent(Graphics g) {
@@ -41,11 +41,11 @@ public class SeleccionAsientosVista extends JFrame {
 
 //---------------------------------------------------------------------
                 // Rectángulo puerta
-                int rectWidth2 = 96; // Ancho del segundo rectángulo
+                int rectWidth2 = 90; // Ancho del segundo rectángulo
                 int rectHeight2 = 12; // Alto del segundo rectángulo
 
                 // Especificar las coordenadas para el segundo rectángulo
-                int x2 = 580;  // Coordenada X del segundo rectángulo
+                int x2 = 581;  // Coordenada X del segundo rectángulo
                 int y2 = 366;   // Coordenada Y del segundo rectángulo
 
 
@@ -57,10 +57,10 @@ public class SeleccionAsientosVista extends JFrame {
 
              //   -------------Rectangulo escaleras--------------------
 
-                int rectWidth3 = 80; // Ancho del segundo rectángulo
+                int rectWidth3 = 75; // Ancho del segundo rectángulo
                 int rectHeight3 = 120; // Alto del segundo rectángulo
 
-                int x3 = 586;
+                int x3 = 588;
                 int y3 = 235;
 
                 g.setColor(Color.white);
@@ -82,18 +82,49 @@ public class SeleccionAsientosVista extends JFrame {
                 g2d.drawLine(inicioX, inicioY-60, finX, finY - 60);
                 g2d.drawLine(inicioX, inicioY - 55, finX, finY - 55);
 
+    //Asientos frente a puerta---------------------------
+                g.setColor(new Color(0xA0F538));
+
+                int asientoWidth = 80;
+                int asientoHeight = 60;
+
+                // Generar asientos en filas
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 10; j++) {
+                        int xAsiento = 46 + (asientoWidth + 10) * j;
+                        int yAsiento = 20 + (asientoHeight + 10) * i;
+                        g.fillRect(xAsiento, yAsiento, asientoWidth, asientoHeight);
+                    }
+                }
+                //Asientos lado puerta---------------------------
+
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 10; j++) {
+                        // Si j == 6, dejamos espacio para las escaleras
+                        if (j == 6) {
+                            // Saltar espacio entre asientos
+                            j += 1;
+                        }
+
+                        int xAsiento = 46 + (asientoWidth + 10) * j;
+                        int yAsiento = 235 + (asientoHeight + 10) * i;
+                        g.fillRect(xAsiento, yAsiento, asientoWidth, asientoHeight);
+                    }
+                }
             }
 
         };
 
-        subPanel.setBackground(Color.white); // Fondo del subpanel
-        subPanel.setBounds(60, 50, 980, 380);
+        EstructuraAutobusSubPanel.setBackground(Color.white); // Fondo del subpanel
+        EstructuraAutobusSubPanel.setBounds(60, 50, 980, 380);
 
         // Agregar el subpanel al panel principal
-        panelPrincipal.add(subPanel);
+        panelPrincipal.add(EstructuraAutobusSubPanel);
 
         // Agregar el panel principal al JFrame
         add(panelPrincipal);
+
+
     }
 
     public static void main(String[] args) {
