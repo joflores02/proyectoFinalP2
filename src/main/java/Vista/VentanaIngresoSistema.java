@@ -1,5 +1,7 @@
 package Vista;
 
+import Controlador.SistemaDeReserva;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +15,7 @@ public class VentanaIngresoSistema extends JPanel {
         fondo = imageIcon.getImage();
 
         setLayout(new GridBagLayout());
+
         botonIngresar = new JButton("Ingresar") {
             @Override
             protected void paintComponent(Graphics g) {
@@ -67,6 +70,17 @@ public class VentanaIngresoSistema extends JPanel {
         Color semiTransparente = new Color(53, 40, 98, 128);
         g2.setColor(semiTransparente);
         g2.fillRect(0, 0, getWidth(), getHeight());
+
+        //Texto bienvenida
+        g.setFont(new Font("Arial", Font.BOLD, 46));
+        String texto = "¡Bienvenido/a al sistema!";
+        FontMetrics fm = g.getFontMetrics();
+        int x = (getWidth() - fm.stringWidth(texto)) / 2;
+        int y = (getHeight() + fm.getAscent()) / 2 - fm.getDescent();
+        g.setColor(new Color(0, 0, 0, 115));
+        g.drawString(texto, x + 3, y - 60);
+        g.setColor(Color.WHITE);
+        g.drawString(texto, x, y - 65);
     }
 
     public JFrame crearVentana() {
@@ -78,9 +92,5 @@ public class VentanaIngresoSistema extends JPanel {
         return ventanaIngreso;
     }
 
-    public static void main(String[] args) {
-        VentanaIngresoSistema panelIngreso = new VentanaIngresoSistema();
-        JFrame ventanaIngreso = panelIngreso.crearVentana();
-        ventanaIngreso.setVisible(true);
-    }
+
 }

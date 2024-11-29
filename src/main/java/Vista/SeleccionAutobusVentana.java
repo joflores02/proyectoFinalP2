@@ -1,18 +1,14 @@
 package Vista;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class SeleccionAutobusVentana {
+public class SeleccionAutobusVentana extends JPanel {
 
     public SeleccionAutobusVentana() {
-        JFrame ventana = new JFrame("Selección de Autobús");
-        ventana.setSize(1120, 652);
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setLocationRelativeTo(null);
-        ventana.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new SeleccionAutobusVentana();
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+        JLabel label = new JLabel("Selección de Autobús");
+        add(label, BorderLayout.CENTER);
     }
 }
