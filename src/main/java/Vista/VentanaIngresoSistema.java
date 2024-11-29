@@ -6,8 +6,11 @@ import java.awt.*;
 
 public class VentanaIngresoSistema extends JPanel {
     private JButton botonIngresar;
+    private Image fondo;
 
     public VentanaIngresoSistema() {
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/Autobus-Image.jpg"));
+        fondo = imageIcon.getImage();
 
         setLayout(new GridBagLayout());
         botonIngresar = new JButton("Ingresar") {
@@ -50,6 +53,20 @@ public class VentanaIngresoSistema extends JPanel {
     // Getter para acceder al botón desde el controlador
     public JButton getBotonIngresar() {
         return botonIngresar;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Dibujar la imagen de fondo
+        if (fondo != null) {
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+        }
+        //Se le agrega un rectangulo encima para hacerla más oscura.
+        Graphics2D g2 = (Graphics2D) g;
+        Color semiTransparente = new Color(53, 40, 98, 128);
+        g2.setColor(semiTransparente);
+        g2.fillRect(0, 0, getWidth(), getHeight());
     }
 
     public JFrame crearVentana() {
