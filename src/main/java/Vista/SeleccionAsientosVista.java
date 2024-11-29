@@ -134,41 +134,41 @@ public class SeleccionAsientosVista extends JFrame {
                 int y = (subPanelHeight - rectHeight) / 2;
 
 
-                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+                g.setColor(new Color(129, 122, 122));
                 g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
 
                 g.setColor(new Color(0, 0, 0));
                 g.setFont(new Font("Arial", Font.BOLD, 14));
-                g.drawString("Simbología", 115,22);
+                g.drawString("Simbología", 20,24);
 
                 // Dibujar un rectángulo asiento disponible
                 g.setColor(new Color(0xA89B0F));
-                g.drawRect(15, 30, 50, 30);
+                g.drawRect(15, 32, 48, 30);
                 g.setColor(new Color(0xFDED40));
-                g.fillRect(16, 31, 49, 29);
+                g.fillRect(16, 33, 47, 29);
 
                 g.setColor(new Color(54, 54, 54));
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
                 g.drawString("Asiento disponible", 75,51);
 
                 // Dibujar un rectángulo asiento seleccionado
                 g.setColor(new Color(0xC27C20));
-                g.drawRect(15, 70, 50, 30);
+                g.drawRect(15, 70, 48, 30);
                 g.setColor(new Color(0xEF9827));
-                g.fillRect(16, 71, 49, 29);
+                g.fillRect(16, 71, 47, 29);
 
                 g.setColor(new Color(54, 54, 54));
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
                 g.drawString("Asiento seleccionado", 75,91);
 
                 // Dibujar un rectángulo asiento ocupado
                 g.setColor(new Color(0x575757));
-                g.drawRect(15, 110, 50, 30);
+                g.drawRect(15, 108, 48, 30);
                 g.setColor(new Color(0x666769));
-                g.fillRect(16, 111, 49, 29);
+                g.fillRect(16, 109, 47, 29);
 
                 g.setColor(new Color(54, 54, 54));
-                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
                 g.drawString("Asiento ocupado", 75,131);
 
             }
@@ -193,9 +193,13 @@ public class SeleccionAsientosVista extends JFrame {
                 int x = (subPanelWidth - rectWidth) / 2;
                 int y = (subPanelHeight - rectHeight) / 2;
 
-                // Dibujar un rectángulo con borde color púrpura que representa al autobús
-                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+
+                g.setColor(new Color(129, 122, 122));
                 g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
+
+                g.setColor(new Color(0, 0, 0));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
+                g.drawString("Asientos Seleccionados", 20,22);
 
             }
         };
@@ -218,9 +222,13 @@ public class SeleccionAsientosVista extends JFrame {
                 int x = (subPanelWidth - rectWidth) / 2;
                 int y = (subPanelHeight - rectHeight) / 2;
 
-                // Dibujar un rectángulo con borde color púrpura que representa al autobús
-                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+
+                g.setColor(new Color(129, 122, 122));
                 g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
+
+                g.setColor(new Color(0, 0, 0));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
+                g.drawString("Monto Total", 20,22);
             }
         };
         MontoTotal.setBackground(new Color(0xFFFFFF));
