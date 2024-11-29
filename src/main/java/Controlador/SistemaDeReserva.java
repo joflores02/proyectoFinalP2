@@ -20,7 +20,14 @@ public class SistemaDeReserva {
         ventanaInicial.getBotonIngresar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cambiarAVentanaSecundaria();
+                cambiarASeleccionAsientos();
+            }
+        });
+
+        ventanaSeleccionAutobus.getIrAtras().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarAVentanaInicial();
             }
         });
 
@@ -30,7 +37,15 @@ public class SistemaDeReserva {
         frame.repaint();
     }
 
-    private void cambiarAVentanaSecundaria() {
+    // Método para cambiar a la ventana de ingreso
+    public void cambiarAVentanaInicial() {
+        frame.setContentPane(ventanaInicial);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    //Método para avanzar a selección de asientos
+    private void cambiarASeleccionAsientos() {
         frame.setContentPane(ventanaSeleccionAutobus);
         frame.revalidate();
         frame.repaint();
