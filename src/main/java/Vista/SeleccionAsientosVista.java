@@ -19,7 +19,6 @@ public class SeleccionAsientosVista extends JFrame {
 
         // Crear el primer subpanel con medidas 980x380
         JPanel EstructuraAutobusSubPanel = new JPanel() {
-            // Sobrescribir el método paintComponent para dibujar en el subpanel
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -83,7 +82,7 @@ public class SeleccionAsientosVista extends JFrame {
                 g2d.drawLine(inicioX, inicioY - 55, finX, finY - 55);
 
     //Asientos frente a puerta---------------------------
-                g.setColor(new Color(0xA0F538));
+                g.setColor(new Color(0xFDED40));
 
                 int asientoWidth = 80;
                 int asientoHeight = 60;
@@ -118,8 +117,120 @@ public class SeleccionAsientosVista extends JFrame {
         EstructuraAutobusSubPanel.setBackground(Color.white); // Fondo del subpanel
         EstructuraAutobusSubPanel.setBounds(60, 50, 980, 380);
 
+        JPanel Simbologia = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Obtener las dimensiones del subpanel
+                int subPanelWidth = getWidth();
+                int subPanelHeight = getHeight();
+
+                // Dimensiones del rectángulo
+                int rectWidth = 305;
+                int rectHeight = 145;
+
+                // Calcular las coordenadas para centrar el rectángulo
+                int x = (subPanelWidth - rectWidth) / 2;
+                int y = (subPanelHeight - rectHeight) / 2;
+
+
+                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+                g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
+
+                g.setColor(new Color(0, 0, 0));
+                g.setFont(new Font("Arial", Font.BOLD, 14));
+                g.drawString("Simbología", 115,22);
+
+                // Dibujar un rectángulo asiento disponible
+                g.setColor(new Color(0xA89B0F));
+                g.drawRect(15, 30, 50, 30);
+                g.setColor(new Color(0xFDED40));
+                g.fillRect(16, 31, 49, 29);
+
+                g.setColor(new Color(54, 54, 54));
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.drawString("Asiento disponible", 75,51);
+
+                // Dibujar un rectángulo asiento seleccionado
+                g.setColor(new Color(0xC27C20));
+                g.drawRect(15, 70, 50, 30);
+                g.setColor(new Color(0xEF9827));
+                g.fillRect(16, 71, 49, 29);
+
+                g.setColor(new Color(54, 54, 54));
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.drawString("Asiento seleccionado", 75,91);
+
+                // Dibujar un rectángulo asiento ocupado
+                g.setColor(new Color(0x575757));
+                g.drawRect(15, 110, 50, 30);
+                g.setColor(new Color(0x666769));
+                g.fillRect(16, 111, 49, 29);
+
+                g.setColor(new Color(54, 54, 54));
+                g.setFont(new Font("Arial", Font.PLAIN, 14));
+                g.drawString("Asiento ocupado", 75,131);
+
+            }
+        };
+
+        Simbologia.setBackground(new Color(0xFFFFFF));
+        Simbologia.setBounds(65, 440, 310, 150);
+
+        JPanel AsientosSeleccionados = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Obtener las dimensiones del subpanel
+                int subPanelWidth = getWidth();
+                int subPanelHeight = getHeight();
+
+                // Dimensiones del rectángulo
+                int rectWidth = 305;
+                int rectHeight = 145;
+
+                // Calcular las coordenadas para centrar el rectángulo
+                int x = (subPanelWidth - rectWidth) / 2;
+                int y = (subPanelHeight - rectHeight) / 2;
+
+                // Dibujar un rectángulo con borde color púrpura que representa al autobús
+                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+                g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
+
+            }
+        };
+        AsientosSeleccionados.setBackground(new Color(0xFFFFFF));
+        AsientosSeleccionados.setBounds(395, 440, 310, 150);
+
+        JPanel MontoTotal = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Obtener las dimensiones del subpanel
+                int subPanelWidth = getWidth();
+                int subPanelHeight = getHeight();
+
+                // Dimensiones del rectángulo
+                int rectWidth = 305;
+                int rectHeight = 145;
+
+                // Calcular las coordenadas para centrar el rectángulo
+                int x = (subPanelWidth - rectWidth) / 2;
+                int y = (subPanelHeight - rectHeight) / 2;
+
+                // Dibujar un rectángulo con borde color púrpura que representa al autobús
+                g.setColor(new Color(129, 122, 122)); // Establecer el color púrpura para el borde
+                g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
+            }
+        };
+        MontoTotal.setBackground(new Color(0xFFFFFF));
+        MontoTotal.setBounds(725, 440, 310, 150);
+
         // Agregar el subpanel al panel principal
         panelPrincipal.add(EstructuraAutobusSubPanel);
+        panelPrincipal.add(Simbologia);
+        panelPrincipal.add(AsientosSeleccionados);
+        panelPrincipal.add(MontoTotal);
 
         // Agregar el panel principal al JFrame
         add(panelPrincipal);
