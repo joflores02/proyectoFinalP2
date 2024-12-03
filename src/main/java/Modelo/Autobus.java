@@ -96,7 +96,7 @@ public class Autobus {
         }
         throw new IllegalArgumentException("El asiento no existe en el primer piso.");
     }
-
+    //herencia por cada tipo de autobus(que pasa si tengo un bus de 1 piso?)
     public boolean reservarAsientoSegundoPiso(int numeroAsiento) {
         if (numPisos == 1) {
             throw new UnsupportedOperationException("Este autobús no tiene segundo piso.");
@@ -116,6 +116,7 @@ public class Autobus {
         throw new IllegalArgumentException("El asiento no existe en el segundo piso.");
     }
 
+    //revisar
 
     public static class Factory {
         public static Autobus crearAutobus(String id, int numPisos) {
