@@ -26,13 +26,13 @@ public class Autobus {
 
         // Inicializar asientos del primer piso
         for (int i = 1; i <= asientosPorPiso; i++) {
-            primerPiso.add(new Asiento(i, categoriaPrimerPiso.name(), categoriaPrimerPiso.getPrecio()));
+            primerPiso.add(new Asiento(i, categoriaPrimerPiso));
         }
 
         // Inicializar asientos del segundo piso si corresponde
         if (numPisos == 2) {
             for (int i = 1; i <= asientosPorPiso; i++) {
-                segundoPiso.add(new Asiento(i, categoriaSegundoPiso.name(), categoriaSegundoPiso.getPrecio()));
+                segundoPiso.add(new Asiento(i, categoriaSegundoPiso));
             }
         }
     }

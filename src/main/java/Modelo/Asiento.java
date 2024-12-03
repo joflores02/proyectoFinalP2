@@ -3,15 +3,15 @@ package Modelo;
 public class Asiento {
     private int numero;
     private boolean estadoReserva;
-    private String categoria;
+    private CategoriaAsiento categoria;
     private double precio;
 
 
-    public Asiento(int numero, String categoria, double precio) {
+    public Asiento(int numero, CategoriaAsiento categoria) {
         this.numero = numero;
         this.estadoReserva = false;
         this.categoria = categoria;
-        this.precio = precio;
+        this.precio = categoria.getPrecio();
     }
 
 
@@ -23,7 +23,7 @@ public class Asiento {
         return estadoReserva;
     }
 
-    public String getCategoria() {
+    public CategoriaAsiento getCategoria() {
         return categoria;
     }
 
