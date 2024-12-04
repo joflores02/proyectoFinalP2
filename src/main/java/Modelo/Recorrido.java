@@ -1,4 +1,5 @@
 package Modelo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,5 +25,6 @@ public class Recorrido {
     @Override
     public String toString() {
         return lugarInicio + " - " + lugarFinal;
+main
     }
 }
