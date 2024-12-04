@@ -13,8 +13,9 @@ public class Autobus {
     private List<Asiento> segundoPiso;
     private String lugarDeInicio;  // Lugar de partida
     private String lugarDeDestino; // Destino
+    private Horario horario;
 
-    private Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino) {
+    private Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
         this.id = id;
         this.numAsientos = numAsientos;
         this.tipo = tipo;
@@ -23,6 +24,7 @@ public class Autobus {
         this.segundoPiso = new ArrayList<>();
         this.lugarDeInicio = lugarDeInicio;
         this.lugarDeDestino = lugarDeDestino;
+        this.horario = horario;
     }
 
     public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso) {
@@ -108,7 +110,7 @@ public class Autobus {
         }
         throw new IllegalArgumentException("El asiento no existe en el primer piso.");
     }
-    //herencia por cada tipo de autobus(que pasa si tengo un bus de 1 piso?)
+
     public boolean reservarAsientoSegundoPiso(int numeroAsiento) {
         if (numPisos == 1) {
             throw new UnsupportedOperationException("Este autobús no tiene segundo piso.");
@@ -125,18 +127,34 @@ public class Autobus {
             }
         }
         throw new IllegalArgumentException("El asiento no existe en el segundo piso.");
+
+
+    }
+
+    public String getLugarPartida() {
+        return this.lugarDeInicio;
+    }
+
+    public Object getDestino() {
+        return this.lugarDeDestino;
+    }
+
+    public Horario getHorario() {
+        return horario;
+    }
+
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
 
-
     // Clase Factory para crear instancias de Autobus
-main
     public static class Factory {
-        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino) {
+        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
             if (numPisos == 1) {
-                return new Autobus(id, 40, "Económico", 1, lugarDeInicio, lugarDeDestino);
+                return new Autobus(id, 40, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
             } else if (numPisos == 2) {
-                return new Autobus(id, 60, "Premium", 2, lugarDeInicio, lugarDeDestino);
+                return new Autobus(id, 60, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
             } else {
                 throw new IllegalArgumentException("Número de pisos no soportado: " + numPisos);
             }
