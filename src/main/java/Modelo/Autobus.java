@@ -130,7 +130,7 @@ public class Autobus {
 
 
     // Clase Factory para crear instancias de Autobus
-main
+
     public static class Factory {
         public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino) {
             if (numPisos == 1) {
