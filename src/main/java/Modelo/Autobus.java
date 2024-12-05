@@ -1,6 +1,6 @@
 package Modelo;
 import Modelo.Asiento;
-
+import Modelo.Horario;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +13,9 @@ public class Autobus {
     private List<Asiento> segundoPiso;
     private String lugarDeInicio;  // Lugar de partida
     private String lugarDeDestino; // Destino
+    private Horario horario;
 
-    private Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino) {
+    private Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
         this.id = id;
         this.numAsientos = numAsientos;
         this.tipo = tipo;
@@ -23,6 +24,8 @@ public class Autobus {
         this.segundoPiso = new ArrayList<>();
         this.lugarDeInicio = lugarDeInicio;
         this.lugarDeDestino = lugarDeDestino;
+        this.horario = horario;
+
     }
 
     public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso) {
@@ -132,11 +135,11 @@ public class Autobus {
     // Clase Factory para crear instancias de Autobus
 
     public static class Factory {
-        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino) {
+        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
             if (numPisos == 1) {
-                return new Autobus(id, 40, "Económico", 1, lugarDeInicio, lugarDeDestino);
+                return new Autobus(id, 40, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
             } else if (numPisos == 2) {
-                return new Autobus(id, 60, "Premium", 2, lugarDeInicio, lugarDeDestino);
+                return new Autobus(id, 60, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
             } else {
                 throw new IllegalArgumentException("Número de pisos no soportado: " + numPisos);
             }
