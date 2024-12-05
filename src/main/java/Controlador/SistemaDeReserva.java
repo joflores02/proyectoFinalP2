@@ -23,8 +23,7 @@ public class SistemaDeReserva {
         this.frame = frame;
         this.ventanaInicial = new VentanaIngresoSistema();
         this.ventanaSeleccionAutobus = new SeleccionAutobusVentana();
-
-
+        
         // Inicializamos las listas de lugares de inicio y destino
         lugaresInicio = new ArrayList<>();
         lugaresDestino = new ArrayList<>();
@@ -35,8 +34,9 @@ public class SistemaDeReserva {
         lugaresDestino.add("Santiago");
         lugaresDestino.add("Chillán");
 
-        // Inicializamos la lista de autobuses
-        autobuses = new ArrayList<>();
+        // Pasamos estas listas de datos a la ventana de selección de autobús para poder seleccionar los lugares
+        ventanaSeleccionAutobus.setLugaresInicio(lugaresInicio);
+        ventanaSeleccionAutobus.setDestinos(lugaresDestino);
 
         // Crear horarios
         Horario horario1 = new Horario("08:00 AM", "12:00 PM");
@@ -47,18 +47,18 @@ public class SistemaDeReserva {
         Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán", horario1);
         Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario2);
 
+        // Inicializamos la lista de autobuses
+        autobuses = new ArrayList<>();
 
-        // Pasamos estas listas de datos a la ventana de selección de autobús para poder seleccionar los lugares
-        ventanaSeleccionAutobus.setLugaresInicio(lugaresInicio);
-        ventanaSeleccionAutobus.setDestinos(lugaresDestino);
-
+        //Manejar la navegación entre dos ventanas
+        //Se aprieta el botón "Ingresar" y se cambia a la vista para seleccionar el recorrido del bus
         ventanaInicial.getBotonIngresar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cambiarASeleccionAsientos();
+                cambiarASeleccionAutobus();
             }
         });
-
+        //Se aprieta el botón "Atras" y se devuelve a la ventana inicial.
         ventanaSeleccionAutobus.getIrAtras().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,7 +80,7 @@ public class SistemaDeReserva {
     }
 
     //Método para avanzar a selección de asientos
-    private void cambiarASeleccionAsientos() {
+    private void cambiarASeleccionAutobus() {
         frame.setContentPane(ventanaSeleccionAutobus);
         frame.revalidate();
         frame.repaint();

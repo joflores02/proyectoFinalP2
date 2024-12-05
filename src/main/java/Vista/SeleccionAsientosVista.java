@@ -18,7 +18,7 @@ public class SeleccionAsientosVista extends JFrame {
         panelPrincipal.setLayout(null);
 
 
-        // Crear el primer subpanel con medidas 980x380
+        // Crear el primer subpanel con medidas 980x380 el cual representa el diseño del bus
         JPanel EstructuraAutobusSubPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -118,6 +118,7 @@ public class SeleccionAsientosVista extends JFrame {
         EstructuraAutobusSubPanel.setBackground(Color.white); // Fondo del subpanel
         EstructuraAutobusSubPanel.setBounds(60, 50, 980, 380);
 
+        //Recuadro que contiene la simbología de los colores de los asientos.
         JPanel Simbologia = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -178,6 +179,8 @@ public class SeleccionAsientosVista extends JFrame {
         Simbologia.setBackground(new Color(0xFFFFFF));
         Simbologia.setBounds(65, 440, 310, 150);
 
+
+        //En esta parte deberían aparecer los asientos que una persona tiene seleccionados.
         JPanel AsientosSeleccionados = new JPanel(){
             @Override
             protected void paintComponent(Graphics g) {
@@ -207,7 +210,9 @@ public class SeleccionAsientosVista extends JFrame {
         AsientosSeleccionados.setBackground(new Color(0xFFFFFF));
         AsientosSeleccionados.setBounds(395, 440, 310, 150);
 
-        // Crear el JPanel
+        // En este recuadro aparece el número del asiento seleccionado junto a su precio
+        //y la suma del precio de todos los asientos representando el total
+        //Además del botón pagar.
         JPanel MontoTotal = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -238,7 +243,9 @@ public class SeleccionAsientosVista extends JFrame {
         MontoTotal.setBackground(new Color(0xFFFFFF));
         MontoTotal.setBounds(725, 440, 310, 150); // Posicionar el panel
 
-// Crear el botón
+// Botón para pagar, luego se selccionarlo se abre la ventana para confirmar la selección de asiento.
+        //Cuando se aprieta confirmar se supone que se debe guardar ese asiento y luego cambiar el estado
+        //del asiento comprado de "disponible" a "ocupado" y cambia el color del asiento igual.
         JButton pagar = new JButton("PAGAR") {
             @Override
             protected void paintComponent(Graphics g) {
