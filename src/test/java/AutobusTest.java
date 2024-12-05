@@ -1,13 +1,15 @@
 import Modelo.Asiento;
 import Modelo.Autobus;
 import Modelo.CategoriaAsiento;
+import Modelo.Horario;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AutobusTest {
+    Horario horario1 = new Horario("08:00 AM", "12:00 PM");
     @Test
     public void CrearAutobus1Piso() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1);
+        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1,"Concepción", "Chillán", horario1);
         assertNotNull(autobus);
         assertEquals(40, autobus.getNumAsientos());
         assertEquals("Económico", autobus.getTipo());
@@ -16,7 +18,7 @@ public class AutobusTest {
 
     @Test
     public void CrearAutobus2Pisos() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         assertNotNull(autobus);
         assertEquals(60, autobus.getNumAsientos());
         assertEquals("Premium", autobus.getTipo());
@@ -25,7 +27,7 @@ public class AutobusTest {
 
     @Test
     public void InicializaAsientosPiso1() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1);
+        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SEMI_CAMA);
 
         assertEquals(40, autobus.getPrimerPiso().size());
@@ -34,7 +36,7 @@ public class AutobusTest {
 
     @Test
     public void InicializaAsientosPiso2() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         assertEquals(30, autobus.getPrimerPiso().size());
@@ -43,7 +45,7 @@ public class AutobusTest {
 
     @Test
     public void VerificarCategoríaAsientos() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         for (Asiento asiento : autobus.getPrimerPiso()) {
@@ -58,7 +60,7 @@ public class AutobusTest {
 
     @Test
     public void DisponibilidadAsientosPiso1() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1);
+        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SEMI_CAMA);
 
         assertTrue(autobus.disponibilidadPrimerPiso());
@@ -66,7 +68,7 @@ public class AutobusTest {
 
     @Test
     public void DisponibilidadAsientosPiso2() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         assertTrue(autobus.disponibilidadSegundoPiso());
@@ -74,7 +76,7 @@ public class AutobusTest {
 
     @Test
     public void TodosLosAsientosOcupados() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         for (Asiento asiento : autobus.getPrimerPiso()) {
@@ -90,7 +92,7 @@ public class AutobusTest {
 
     @Test
     public void reservaAsiento() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         boolean resultado = autobus.reservarAsientoSegundoPiso(1);
@@ -99,7 +101,7 @@ public class AutobusTest {
 
     @Test
     public void ReservarAsientoInexistente() {
-        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2);
+        Autobus autobus = Autobus.Factory.crearAutobus("A2", 2,"Concepción", "Chillán", horario1);
         autobus.inicializarAsientos(CategoriaAsiento.SEMI_CAMA, CategoriaAsiento.SALON_CAMA);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

@@ -3,7 +3,6 @@ package Vista;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.util.List;
 
 public class SeleccionAutobusVentana extends JPanel {
     private JButton irAtras;
@@ -50,12 +49,5 @@ public class SeleccionAutobusVentana extends JPanel {
     // Getter para el botón "ATRÁS"
     public JButton getIrAtras() {
         return irAtras;
-    }
-
-    public void setLugaresInicio(List<String> lugaresInicio) {
-
-    }
-
-    public void setDestinos(List<String> lugaresDestino) {
     }
 }

@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SeleccionAsientosVista extends JFrame {
-
+    private JButton pagar;
     public SeleccionAsientosVista() {
         // Configuración básica de la ventana
         setTitle("Seleccion de Asientos");
@@ -16,6 +16,7 @@ public class SeleccionAsientosVista extends JFrame {
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setBackground(new Color(0xF2F2F6));
         panelPrincipal.setLayout(null);
+
 
         // Crear el primer subpanel con medidas 980x380
         JPanel EstructuraAutobusSubPanel = new JPanel() {
@@ -206,7 +207,8 @@ public class SeleccionAsientosVista extends JFrame {
         AsientosSeleccionados.setBackground(new Color(0xFFFFFF));
         AsientosSeleccionados.setBounds(395, 440, 310, 150);
 
-        JPanel MontoTotal = new JPanel(){
+        // Crear el JPanel
+        JPanel MontoTotal = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -222,17 +224,59 @@ public class SeleccionAsientosVista extends JFrame {
                 int x = (subPanelWidth - rectWidth) / 2;
                 int y = (subPanelHeight - rectHeight) / 2;
 
-
                 g.setColor(new Color(129, 122, 122));
                 g.drawRect(x, y, rectWidth, rectHeight); // Dibujar el rectángulo centrado
 
                 g.setColor(new Color(0, 0, 0));
                 g.setFont(new Font("Arial", Font.BOLD, 14));
-                g.drawString("Monto Total", 20,22);
+                g.drawString("Monto Total", 20, 22);
             }
         };
+
+// Usamos layout nulo para poder posicionar el botón manualmente
+        MontoTotal.setLayout(null);
         MontoTotal.setBackground(new Color(0xFFFFFF));
-        MontoTotal.setBounds(725, 440, 310, 150);
+        MontoTotal.setBounds(725, 440, 310, 150); // Posicionar el panel
+
+// Crear el botón
+        JButton pagar = new JButton("PAGAR") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Fondo del botón
+                if (getModel().isPressed()) {
+                    g2.setColor(new Color(150, 150, 255)); // Color al hacer clic
+                } else if (getModel().isRollover()) {
+                    g2.setColor(new Color(180, 180, 255)); // Color al pasar el mouse
+                } else {
+                    g2.setColor(new Color(135, 66, 255, 50)); // Color predeterminado
+                }
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); // Fondo redondeado
+
+                // Texto del botón
+                String texto = "PAGAR";
+                g2.setColor(new Color(0x3B0193));
+                g2.setFont(new Font("Arial", Font.BOLD, 16));
+                FontMetrics fm = g2.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(texto)) / 2;
+                int y = (getHeight() + fm.getAscent()) / 2 - fm.getDescent() + 2;
+                g2.drawString(texto, x, y);
+            }
+        };
+        pagar.setBorderPainted(false); // Desactiva la pintura del borde
+        pagar.setFocusPainted(false);
+        pagar.setBounds(MontoTotal.getWidth() - 100, MontoTotal.getHeight() - 40 , 80, 30);  // Ajusta la posición y tamaño del botón dentro del JPanel
+        MontoTotal.add(pagar);
+
+        // Al hacer click en el botón se va a abrir la ventana para confirmar la compra
+        pagar.addActionListener(e -> {
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(MontoTotal);
+            ConfirmarReservaVentana confirmarVentana = new ConfirmarReservaVentana(parentFrame);
+            confirmarVentana.setVisible(true);  // Mostrar la ventana
+        });
+
 
         // Agregar el subpanel al panel principal
         panelPrincipal.add(EstructuraAutobusSubPanel);

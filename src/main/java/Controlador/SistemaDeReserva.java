@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.Horario;
 import Vista.SeleccionAutobusVentana;
 import Vista.VentanaIngresoSistema;
 import Modelo.Recorrido;
@@ -37,10 +38,14 @@ public class SistemaDeReserva {
         // Inicializamos la lista de autobuses
         autobuses = new ArrayList<>();
 
+        // Crear horarios
+        Horario horario1 = new Horario("08:00 AM", "12:00 PM");
+        Horario horario2 = new Horario("02:00 PM", "06:00 PM");
+
         // Crear autobuses
-        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago");
-        Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán");
-        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles");
+        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago", horario1);
+        Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán", horario1);
+        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario2);
 
 
         // Pasamos estas listas de datos a la ventana de selección de autobús para poder seleccionar los lugares
