@@ -245,7 +245,7 @@ public class SeleccionAsientosVista extends JFrame {
 
 // Botón para pagar, luego se selccionarlo se abre la ventana para confirmar la selección de asiento.
         //Cuando se aprieta confirmar se supone que se debe guardar ese asiento y luego cambiar el estado
-        //del asiento comprado de "disponible" a "ocupado" y cambia el color del asiento igual.
+        //del asiento comprado de "disponible" a "ocupado" y cambia el color del asiento igual...
         JButton pagar = new JButton("PAGAR") {
             @Override
             protected void paintComponent(Graphics g) {
