@@ -25,6 +25,5 @@ public class Recorrido {
     @Override
     public String toString() {
         return lugarInicio + " - " + lugarFinal;
-main
     }
 }
