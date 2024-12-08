@@ -3,7 +3,6 @@ package Controlador;
 import Modelo.Horario;
 import Vista.SeleccionAutobusVentana;
 import Vista.VentanaIngresoSistema;
-import Modelo.Recorrido;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -39,16 +38,28 @@ public class SistemaDeReserva {
         ventanaSeleccionAutobus.setDestinos(lugaresDestino);
 
         // Crear horarios
-        Horario horario1 = new Horario("08:00 AM", "12:00 PM");
-        Horario horario2 = new Horario("02:00 PM", "06:00 PM");
+        Horario horario1 = new Horario("08:00 AM", "11:30 PM");
+        Horario horario2 = new Horario("02:00 PM", "08:30 PM");
+        Horario horario3 = new Horario("09:00 AM", "11:00 PM");
+        Horario horario4 = new Horario("10:00 AM", "06:30 PM");
 
         // Crear autobuses
-        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago", horario1);
+        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago", horario2);
         Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán", horario1);
-        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario2);
+        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario3);
+        Autobus autobus4 = Autobus.Factory.crearAutobus("A4", 2, "Concepción", "Santiago", horario4);
 
         // Inicializamos la lista de autobuses
         autobuses = new ArrayList<>();
+
+        // Agregar los autobuses a la lista
+        autobuses.add(autobus1);
+        autobuses.add(autobus2);
+        autobuses.add(autobus3);
+        autobuses.add(autobus4);
+
+        // Pasamos la lista de autobuses a la ventana de selección de autobús
+        ventanaSeleccionAutobus.setAutobuses(autobuses);
 
         //Manejar la navegación entre dos ventanas
         //Se aprieta el botón "Ingresar" y se cambia a la vista para seleccionar el recorrido del bus
