@@ -26,4 +26,8 @@ public class Horario {
         return horarios;
     }
 
+    @Override
+    public String toString() {
+        return horaSalida + " - " + horaLlegada;
+    }
 }
