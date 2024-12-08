@@ -152,9 +152,36 @@ public class SeleccionAutobusVentana extends JPanel {
         detallesAutobus.setPreferredSize(new Dimension(1040, 500));
         detallesAutobus.setBackground(Color.WHITE);
 
+        // Establecer las columnas de la tabla
         String[] columnas = {"ID", "Origen", "Destino", "Hora", "Tipo"};
-        tablaSeleccionAutobus = new DefaultTableModel(new Object[0][0], columnas);
+
+        tablaSeleccionAutobus = new DefaultTableModel(new Object[0][0], columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // hace que las celdas no sean editables
+            }
+        };
+
         tabla = new JTable(tablaSeleccionAutobus);
+
+        // Personalizar la tabla
+        tabla.setFont(new Font("Arial", Font.PLAIN, 14));
+        tabla.setRowHeight(30); //Altura filas
+        tabla.setGridColor(new Color(220, 220, 220));
+        tabla.setSelectionBackground(new Color(105, 101, 218, 100));
+        tabla.setSelectionForeground(new Color(0x3B0192));
+        tabla.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        tabla.getTableHeader().setBackground(new Color(59, 1, 145));
+        tabla.getTableHeader().setForeground(Color.WHITE);
+        tabla.setShowGrid(true); // Visibilidad de las líneas de la tabla
+
+        //ancho de las columnas
+        tabla.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(200); // Origen
+        tabla.getColumnModel().getColumn(2).setPreferredWidth(200); // Destino
+        tabla.getColumnModel().getColumn(3).setPreferredWidth(100); // Hora
+        tabla.getColumnModel().getColumn(4).setPreferredWidth(100); // Tipo
+
         detallesAutobus.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
         return detallesAutobus;
