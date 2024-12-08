@@ -105,7 +105,34 @@ public class SeleccionAutobusVentana extends JPanel {
         panelBusqueda.add(destino);
 
         // Botón "Buscar"
-        btnBuscar = new JButton("BUSCAR");
+        btnBuscar = new JButton("BUSCAR") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                if (getModel().isPressed()) {
+                    g2.setColor(new Color(150, 150, 255)); // Color cuando se presiona
+                } else if (getModel().isRollover()) {
+                    g2.setColor(new Color(180, 180, 255)); // Color cuando pasa el ratón sobre el botón
+                } else {
+                    g2.setColor(new Color(135, 66, 255, 50)); // Color por defecto
+                }
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); // Bordes redondeados
+
+                g2.setColor(new Color(0x3B0193)); // Color del texto
+                g2.setFont(new Font("Arial", Font.BOLD, 16)); // Fuente del texto
+                FontMetrics fm = g2.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth("BUSCAR")) / 2;
+                int y = (getHeight() + fm.getAscent()) / 2 - fm.getDescent() + 2;
+                g2.drawString("BUSCAR", x, y); // Centrar el texto
+            }
+        };
+
+        btnBuscar.setContentAreaFilled(false);
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setBorderPainted(false);
+        btnBuscar.setPreferredSize(new Dimension(100, 30));
         btnBuscar.setBounds(x + 2 * (width + gap), y + height + 5, width, height);
         panelBusqueda.add(btnBuscar);
 
