@@ -77,6 +77,10 @@ public class Autobus {
         return lugarDeDestino;
     }
 
+    public Horario getHorario(){
+        return horario;
+    }
+
     // Métodos para verificar disponibilidad y reservar asientos
     public boolean disponibilidadPrimerPiso() {
         for (Asiento asiento : primerPiso) {
