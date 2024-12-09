@@ -7,6 +7,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,7 +168,7 @@ public class SeleccionAutobusVentana extends JPanel {
 
         // Personalizar la tabla
         tabla.setFont(new Font("Arial", Font.PLAIN, 14));
-        tabla.setRowHeight(30); //Altura filas
+        tabla.setRowHeight(30); // Altura filas
         tabla.setGridColor(new Color(220, 220, 220));
         tabla.setSelectionBackground(new Color(105, 101, 218, 100));
         tabla.setSelectionForeground(new Color(0x3B0192));
@@ -175,12 +177,30 @@ public class SeleccionAutobusVentana extends JPanel {
         tabla.getTableHeader().setForeground(Color.WHITE);
         tabla.setShowGrid(true); // Visibilidad de las líneas de la tabla
 
-        //ancho de las columnas
+        // Ancho de las columnas
         tabla.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
-        tabla.getColumnModel().getColumn(1).setPreferredWidth(200); // Origen
-        tabla.getColumnModel().getColumn(2).setPreferredWidth(200); // Destino
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(160); // Origen
+        tabla.getColumnModel().getColumn(2).setPreferredWidth(160); // Destino
         tabla.getColumnModel().getColumn(3).setPreferredWidth(100); // Hora
         tabla.getColumnModel().getColumn(4).setPreferredWidth(100); // Tipo
+
+        tabla.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {  // Doble clic
+                    int row = tabla.getSelectedRow();
+                    SeleccionAsientosVista ventana = new SeleccionAsientosVista();
+                    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    ventana.setVisible(true);  // Abrir la ventana
+                    // Obtener las coordenadas de la ventana de selección de asientos
+                    int x = getLocationOnScreen().x;
+                    int y = getLocationOnScreen().y;
+
+                    // Ajustar la ubicación para que la nueva ventana sea posicionada respecto a la primera ventana
+                    ventana.setLocation(x + 50, y + 15);
+                }
+            }
+        });
 
         detallesAutobus.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
@@ -208,7 +228,8 @@ public class SeleccionAutobusVentana extends JPanel {
     private void actualizarTabla() {
         tablaSeleccionAutobus.setRowCount(0); // Limpiar la tabla
         for (Autobus autobus : autobusesFiltrados) {
-            tablaSeleccionAutobus.addRow(new Object[]{autobus.getId(), autobus.getLugarDeInicio(), autobus.getLugarDeDestino(), autobus.getHorario(), autobus.getTipo()});
+            tablaSeleccionAutobus.addRow(new Object[]{autobus.getId(), autobus.getLugarDeInicio(),
+                    autobus.getLugarDeDestino(), autobus.getHorario(), autobus.getTipo()});
         }
     }
 
