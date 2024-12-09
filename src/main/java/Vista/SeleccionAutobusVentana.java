@@ -189,6 +189,9 @@ public class SeleccionAutobusVentana extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {  // Doble clic
                     int row = tabla.getSelectedRow();
+                    String autobusId = (String) tabla.getValueAt(row, 0);
+                    Autobus autobusSeleccionado = obtenerAutobusPorId(autobusId);
+
                     SeleccionAsientosVista ventana = new SeleccionAsientosVista();
                     ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     ventana.setVisible(true);  // Abrir la ventana
@@ -205,6 +208,16 @@ public class SeleccionAutobusVentana extends JPanel {
         detallesAutobus.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
         return detallesAutobus;
+    }
+
+    // Método para obtener el autobus por ID
+    private Autobus obtenerAutobusPorId(String id) {
+        for (Autobus autobus : autobusesFiltrados) {
+            if (autobus.getId().equals(id)) {
+                return autobus;
+            }
+        }
+        return null;
     }
 
     // Método para realizar la búsqueda y filtrar los autobuses
