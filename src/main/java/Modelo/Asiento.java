@@ -36,7 +36,6 @@ public class Asiento {
         return !estadoReserva;
     }
 
-
     public boolean reservar() {
         if (disponibilidadAsiento()) {
             estadoReserva = true;

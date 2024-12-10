@@ -190,30 +190,37 @@ public class SeleccionAutobusVentana extends JPanel {
                 if (e.getClickCount() == 2) {  // Doble clic
                     int row = tabla.getSelectedRow();
                     String autobusId = (String) tabla.getValueAt(row, 0);
+
                     Autobus autobusSeleccionado = obtenerAutobusPorId(autobusId);
 
-                    SeleccionAsientosVista ventana = new SeleccionAsientosVista();
-                    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    ventana.setVisible(true);  // Abrir la ventana
-                    // Obtener las coordenadas de la ventana de selección de asientos
-                    int x = getLocationOnScreen().x;
-                    int y = getLocationOnScreen().y;
+                    if (autobusSeleccionado != null) {
+                        // Crear la ventana de selección de asientos y pasar el autobús seleccionado
+                        SeleccionAsientosVentana ventana = new SeleccionAsientosVentana(autobusSeleccionado); // Asumiendo que el constructor acepta un Autobus
+                        ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        ventana.setVisible(true);  // Abrir la ventana
 
-                    // Ajustar la ubicación para que la nueva ventana sea posicionada respecto a la primera ventana
-                    ventana.setLocation(x + 50, y + 15);
+                        // Obtener las coordenadas de la ventana de selección de asientos
+                        int x = getLocationOnScreen().x;
+                        int y = getLocationOnScreen().y;
+
+                        // Ajustar la ubicación para que la nueva ventana sea posicionada respecto a la primera ventana
+                        ventana.setLocation(x + 50, y + 15);
+                    }
                 }
             }
         });
+
 
         detallesAutobus.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
         return detallesAutobus;
     }
 
+
     // Método para obtener el autobus por ID
     private Autobus obtenerAutobusPorId(String id) {
         for (Autobus autobus : autobusesFiltrados) {
-            if (autobus.getId().equals(id)) {
+            if (autobus.getId().equals(id)) { // Usar equals para comparar Strings
                 return autobus;
             }
         }
@@ -266,3 +273,4 @@ public class SeleccionAutobusVentana extends JPanel {
         return irAtras;
     }
 }
+

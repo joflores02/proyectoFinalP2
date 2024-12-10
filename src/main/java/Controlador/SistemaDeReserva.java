@@ -1,13 +1,15 @@
 package Controlador;
 
 import Modelo.Horario;
+import Vista.InterfazBuilder;
 import Vista.SeleccionAutobusVentana;
 import Vista.VentanaIngresoSistema;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
+import javax.swing.*;
+
 import Modelo.Autobus;
 
 public class SistemaDeReserva {
@@ -22,7 +24,7 @@ public class SistemaDeReserva {
         this.frame = frame;
         this.ventanaInicial = new VentanaIngresoSistema();
         this.ventanaSeleccionAutobus = new SeleccionAutobusVentana();
-        
+
         // Inicializamos las listas de lugares de inicio y destino
         lugaresInicio = new ArrayList<>();
         lugaresDestino = new ArrayList<>();
@@ -44,10 +46,10 @@ public class SistemaDeReserva {
         Horario horario4 = new Horario("10:00 AM", "06:30 PM");
 
         // Crear autobuses
-        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago", horario2);
-        Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán", horario1);
-        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario3);
-        Autobus autobus4 = Autobus.Factory.crearAutobus("A4", 2, "Concepción", "Santiago", horario4);
+        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 1, "Concepción", "Santiago", horario2, "Económico");
+        Autobus autobus2 = Autobus.Factory.crearAutobus("A2", 1, "Concepción", "Chillán", horario1, "Económico");
+        Autobus autobus3 = Autobus.Factory.crearAutobus("A3", 1, "Concepción", "Los Ángeles", horario3, "Económico");
+        Autobus autobus4 = Autobus.Factory.crearAutobus("A4", 2, "Concepción", "Santiago", horario4, "Premium");
 
         // Inicializamos la lista de autobuses
         autobuses = new ArrayList<>();
@@ -77,6 +79,8 @@ public class SistemaDeReserva {
             }
         });
 
+
+
         //Muestra la ventana principal al iniciar
         frame.setContentPane(ventanaInicial);
         frame.revalidate();
@@ -96,6 +100,7 @@ public class SistemaDeReserva {
         frame.revalidate();
         frame.repaint();
     }
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Sistema de Reserva");

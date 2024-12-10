@@ -30,17 +30,16 @@ public class Autobus {
 
     public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso) {
         int asientosPorPiso = numAsientos / numPisos;
+        inicializarAsientosPorPiso(primerPiso, asientosPorPiso, categoriaPrimerPiso);
 
-        // Inicializar asientos del primer piso
-        for (int i = 1; i <= asientosPorPiso; i++) {
-            primerPiso.add(new Asiento(i, categoriaPrimerPiso));
-        }
-
-        // Inicializar asientos del segundo piso si corresponde
         if (numPisos == 2) {
-            for (int i = 1; i <= asientosPorPiso; i++) {
-                segundoPiso.add(new Asiento(i, categoriaSegundoPiso));
-            }
+            inicializarAsientosPorPiso(segundoPiso, asientosPorPiso, categoriaSegundoPiso);
+        }
+    }
+
+    private void inicializarAsientosPorPiso(List<Asiento> piso, int asientosPorPiso, CategoriaAsiento categoria) {
+        for (int i = 1; i <= asientosPorPiso; i++) {
+            piso.add(new Asiento(i, categoria));
         }
     }
 
@@ -81,29 +80,15 @@ public class Autobus {
         return horario;
     }
 
-    // Métodos para verificar disponibilidad y reservar asientos
-    public boolean disponibilidadPrimerPiso() {
-        for (Asiento asiento : primerPiso) {
-            if (asiento.disponibilidadAsiento()) {
-                return true;
-            }
-        }
-        return false;
+    // Métodos para verificar disponibilidad y reservas
+    public boolean verificarDisponibilidad(int piso) {
+        return (piso == 1 ? primerPiso : segundoPiso).stream().anyMatch(Asiento::disponibilidadAsiento);
     }
 
-    public boolean disponibilidadSegundoPiso() {
-        if (numPisos == 2) {
-            for (Asiento asiento : segundoPiso) {
-                if (asiento.disponibilidadAsiento()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    public boolean reservarAsiento(int numeroAsiento, int piso) {
+        List<Asiento> asientos = (piso == 1) ? primerPiso : segundoPiso;
 
-    public boolean reservarAsientoPrimerPiso(int numeroAsiento) {
-        for (Asiento asiento : primerPiso) {
+        for (Asiento asiento : asientos) {
             if (asiento.getNumero() == numeroAsiento) {
                 if (asiento.disponibilidadAsiento()) {
                     asiento.reservar();
@@ -113,40 +98,46 @@ public class Autobus {
                 }
             }
         }
-        throw new IllegalArgumentException("El asiento no existe en el primer piso.");
+
+        throw new IllegalArgumentException("El asiento no existe en el piso " + piso + ".");
     }
-    //herencia por cada tipo de autobus(que pasa si tengo un bus de 1 piso?)
-    public boolean reservarAsientoSegundoPiso(int numeroAsiento) {
+
+    public String getTipoAsiento() {
+        // Retorna el tipo de asiento basado en el tipo de autobús y el número de pisos
         if (numPisos == 1) {
-            throw new UnsupportedOperationException("Este autobús no tiene segundo piso.");
+            return "Semi-Cama";  // Asientos semi-cama en autobús de un piso
+        } else if (numPisos == 2 && tipo.equals("Premium")) {
+            return "Salón-Cama";  // Asientos salón-cama en autobús premium de dos pisos
+        } else {
+            return "Semi-Cama";  // Si es un autobús económico de dos pisos
         }
-
-        for (Asiento asiento : segundoPiso) {
-            if (asiento.getNumero() == numeroAsiento) {
-                if (asiento.disponibilidadAsiento()) {
-                    asiento.reservar();
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        throw new IllegalArgumentException("El asiento no existe en el segundo piso.");
     }
-
-
 
     // Clase Factory para crear instancias de Autobus
 
     public static class Factory {
-        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
+        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario, String categoria) {
             if (numPisos == 1) {
-                return new Autobus(id, 40, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
+                // Si la categoría es "Premium", se crea un autobús premium de 1 piso
+                if (categoria.equals("Premium")) {
+                    return new Autobus(id, 38, "Premium", 1, lugarDeInicio, lugarDeDestino, horario);
+                } else if (categoria.equals("Económico")) {
+                    return new Autobus(id, 38, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
+                } else {
+                    throw new IllegalArgumentException("Categoría no soportada para autobuses de 1 piso: " + categoria);
+                }
             } else if (numPisos == 2) {
-                return new Autobus(id, 60, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
+                if (categoria.equals("Económico")) {
+                    return new Autobus(id, 76, "Económico", 2, lugarDeInicio, lugarDeDestino, horario);
+                } else if (categoria.equals("Premium")) {
+                    return new Autobus(id, 76, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
+                } else {
+                    throw new IllegalArgumentException("Categoría no soportada para autobuses de 2 pisos: " + categoria);
+                }
             } else {
                 throw new IllegalArgumentException("Número de pisos no soportado: " + numPisos);
             }
         }
     }
+
 }
