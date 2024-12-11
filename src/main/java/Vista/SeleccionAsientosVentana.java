@@ -2,20 +2,26 @@ package Vista;
 
 import Modelo.Asiento;
 import Modelo.Autobus;
+import Modelo.CategoriaAsiento;
 import Modelo.Horario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SeleccionAsientosVentana extends JFrame {
-    private final int TAMANO_ASIENTO = 50;  // Tamaño de cada asiento
+    private final int TAMANO_ASIENTO = 50;  
     private Autobus autobus;
     private JPanel panelAsientos;
     private JButton btnCambiarPiso;
     private int pisoActual;  // Variable para controlar el piso actual
+    List<Asiento> asientosPrimerPiso = new ArrayList<>();
+    List<Asiento> asientosSegundoPiso = new ArrayList<>();
+    private boolean mouseListenerRegistrado = false;
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -30,6 +36,8 @@ public class SeleccionAsientosVentana extends JFrame {
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setBackground(new Color(0xF2F2F6));
         panelPrincipal.setLayout(null);
+
+
 
         // Subpanel para el diseño del autobús
         panelAsientos = new JPanel() {
@@ -49,12 +57,26 @@ public class SeleccionAsientosVentana extends JFrame {
 
                 // Dibujar asientos según el piso actual
                 if (pisoActual == 1) {
-                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10);
-                    builder.dibujarAsientosConEspacio(g, 2, 10, 46, 235, 80, 60, 10, 6);
+                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
+
                 } else {
-                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10);  // Primera sección
-                    builder.dibujarAsientosConEspacio(g, 2, 10, 46, 235, 80, 60, 10, 6);
+                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);  
+
                 }
+
+                //listener para q aparezca solo una vez
+                if (!mouseListenerRegistrado) {
+                    panelAsientos.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            manejarClic(e.getX(), e.getY());
+                            repaint();
+                            System.out.println("Clic detectado en posición: (" + e.getX() + ", " + e.getY() + ")");
+                        }
+                    });
+                    mouseListenerRegistrado = true; // Evitar que se registre nuevamente
+                }
+
             }
         };
 
@@ -103,13 +125,13 @@ public class SeleccionAsientosVentana extends JFrame {
             Graphics2D g2d = (Graphics2D) g;
             AffineTransform originalTransform = g2d.getTransform();  // Guardar la transformación original
 
-            Font font = new Font("Arial", Font.BOLD, 14);  // Fuente Arial, tamaño 14, negrita
+            Font font = new Font("Arial", Font.BOLD, 14); 
             g2d.setFont(font);
 
             // Aplicar rotación de 45 grados
             // Ajustamos las coordenadas para que el texto quede centrado sobre la escalera
             AffineTransform transform = new AffineTransform();
-            transform.rotate(Math.toRadians(45), 588 + 37.5, 235 + 60);  // Punto de referencia para la rotación (centro de la escalera)
+            transform.rotate(Math.toRadians(45), 588 + 37.5, 235 + 60);  
             g2d.setTransform(transform);
 
             // Dibujar texto en diagonal
@@ -216,17 +238,26 @@ public class SeleccionAsientosVentana extends JFrame {
             return colorBase;
         }
 
-        // Arreglo de Asientos para cada piso
-        List<Asiento> asientosPrimerPiso = new ArrayList<>();
-        List<Asiento> asientosSegundoPiso = new ArrayList<>();
+        // Método para mapear el tipo de asiento a la enumeración
+        private CategoriaAsiento obtenerCategoria(String tipoAsiento) {
+            switch (tipoAsiento) {
+                case "Semi-Cama":
+                    return CategoriaAsiento.SEMI_CAMA;
+                case "Salón-Cama":
+                    return CategoriaAsiento.SALON_CAMA;
+                default:
+                    throw new IllegalArgumentException("Tipo de asiento desconocido: " + tipoAsiento);
+            }
+        }
+
 
         // Dibuja los asientos en la interfaz gráfica con números de manera continua
         public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
             Color color = determinarColor();  // Determina el color del asiento
             int numeroAsiento;  // Variable para el número de asiento
-            int baseNumeroAsiento = (pisoActual == 1) ? 1 : (38 + 1);  // Establece un número base dependiendo del piso
+            int baseNumeroAsiento = (pisoActual == 1) ? 1 : (36 + 1);  // Establece un número base dependiendo del piso
 
-            Font font = new Font("Arial", Font.BOLD, 14);  // Fuente en negrita
+            Font font = new Font("Arial", Font.BOLD, 14);  
             g.setFont(font);
 
             // Iteración para las filas
@@ -239,95 +270,74 @@ public class SeleccionAsientosVentana extends JFrame {
                     // Calcula las coordenadas (x, y) del asiento
                     int x = inicioX + (ancho + espacio) * j;
                     int y = inicioY + (alto + espacio) * i;
-                    /*
-                    Asiento asiento;
-                    if (pisoActual == 1) {
-                        asientosPrimerPiso.add(asiento);
-                    } else {
-                        asientosSegundoPiso.add(asiento);
-                    }
-*/
+
+
                     // Dibuja el asiento
                     g.setColor(color);  // Establece el color del asiento
                     g.fillRect(x, y, ancho, alto);  // Dibuja el asiento
 
                     // Dibuja el número dentro del asiento
-                    g.setColor(Color.BLACK);  // Color del número (puedes cambiarlo)
+                    g.setColor(Color.BLACK);  // Color del número
                     String numeroAsientoStr = Integer.toString(numeroAsiento);  // Convierte el número a String
                     g.drawString(numeroAsientoStr, x + ancho / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2, y + alto / 2 + g.getFontMetrics().getHeight() / 4);
-                }
-            }
-        }
 
-
-        // Dibuja los asientos dejando espacio en una columna (como para las escaleras) y con números continuos
-        public void dibujarAsientosConEspacio(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio, int columnaEspacio) {
-            Color color = determinarColor();  // Determina el color del asiento
-            int numeroAsiento = (pisoActual == 1) ? 21 : (38 + 21);  // Comienza la numeración desde 21 (o el total del primer piso + 1 para el segundo)
-
-            Font font = new Font("Arial", Font.BOLD, 14);  // Fuente en negrita
-            g.setFont(font);
-
-            if(pisoActual == 1){
-                // Iteración para las columnas
-                for (int j = 0; j < columnas; j++) {
-                    // Si la columna es la de espacio (por ejemplo, para las escaleras), saltamos a la siguiente
-                    if (j == columnaEspacio) {
-                        continue;  // Salta esta columna
-                    }
-
-                    // Iteración para las filas
-                    for (int i = 0; i < filas; i++) {
-                        // Calcula las coordenadas (x, y) del asiento
-                        int x = inicioX + (ancho + espacio) * j;
-                        int y = inicioY + (alto + espacio) * i;
-
-                        g.setColor(color);  // Establece el color del asiento
-                        g.fillRect(x, y, ancho, alto);  // Dibuja el asiento
-
-                        // Dibuja el número dentro del asiento
-                        g.setColor(Color.BLACK);  // Color del número (puedes cambiarlo)
-                        String numeroAsientoStr = Integer.toString(numeroAsiento);  // Convierte el número a String
-                        g.drawString(numeroAsientoStr, x + ancho / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2, y + alto / 2 + g.getFontMetrics().getHeight() / 4);
-
-                        // Incrementa el número de asiento
-                        numeroAsiento++;
+                    if (pisoActual == 1) {
+                        // Agrega el asiento al primer piso
+                        asientosPrimerPiso.add(new Asiento(
+                                numeroAsiento,
+                                obtenerCategoria(tipoAsiento), // Usamos el método para determinar la categoría
+                                x,
+                                y
+                        ));
+                    } else {
+                        // Agrega el asiento al segundo piso
+                        asientosSegundoPiso.add(new Asiento(
+                                numeroAsiento,
+                                obtenerCategoria(tipoAsiento), // Usamos el método para determinar la categoría
+                                x,
+                                y
+                        ));
                     }
                 }
-            }else{
-                // Iteración para las columnas
-                for (int j = 0; j < columnas; j++) {
-                    // Si la columna es la de espacio (por ejemplo, para las escaleras), saltamos a la siguiente
-                    if (j == columnas - 1) {
-                        continue;  // Salta esta columna
-                    }
-
-                    // Iteración para las filas
-                    for (int i = 0; i < filas; i++) {
-                        // Calcula las coordenadas (x, y) del asiento
-                        int x = inicioX + (ancho + espacio) * j;
-                        int y = inicioY + (alto + espacio) * i;
-
-                        g.setColor(color);  // Establece el color del asiento
-                        g.fillRect(x, y, ancho, alto);  // Dibuja el asiento
-
-                        // Dibuja el número dentro del asiento
-                        g.setColor(Color.BLACK);  // Color del número (puedes cambiarlo)
-                        String numeroAsientoStr = Integer.toString(numeroAsiento);  // Convierte el número a String
-                        g.drawString(numeroAsientoStr, x + ancho / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2, y + alto / 2 + g.getFontMetrics().getHeight() / 4);
-
-                        // Incrementa el número de asiento
-                        numeroAsiento++;
-                    }
+                if(i == 1){
+                    inicioY = inicioY + 65;
                 }
+
             }
         }
 
     }
 
+    private void manejarClic(int x, int y) {
+        // Verificar clic en asientos del primer piso
+        verificarClicEnAsientos(asientosPrimerPiso, x, y);
+
+        // Verificar clic en asientos del segundo piso
+        verificarClicEnAsientos(asientosSegundoPiso, x, y);
+    }
+
+    private void verificarClicEnAsientos(List<Asiento> asientos, int x, int y) {
+        for (Asiento asiento : asientos) {
+            // Verifica si el clic está dentro de los límites del asiento
+            if (x >= asiento.getX() && x <= asiento.getX() + 80 &&
+                    y >= asiento.getY() && y <= asiento.getY() + 60) {
+
+                // mensaje si el asiento está disponible
+                if (asiento.isOcupado()) {
+                    System.out.println("Asiento seleccionado: " + asiento.getNumero() +
+                            " - Categoría: " + asiento.getCategoria());
+                } else {
+                    // Mensaje de asiento no está disponible
+                    System.out.println("El asiento " + asiento.getNumero() + " no está disponible.");
+                }
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
         Horario horario2 = new Horario("02:00 PM", "08:30 PM");
-        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 2, "Concepción", "Santiago", horario2, "Premium");  // Cambié para un autobús de 2 pisos
+        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 2, "Concepción", "Santiago", horario2, "Premium"); 
 
         SwingUtilities.invokeLater(() -> {
             SeleccionAsientosVentana ventana = new SeleccionAsientosVentana(autobus1);
