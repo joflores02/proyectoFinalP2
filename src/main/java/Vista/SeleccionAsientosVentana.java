@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;  
@@ -22,6 +24,9 @@ public class SeleccionAsientosVentana extends JFrame {
     List<Asiento> asientosPrimerPiso = new ArrayList<>();
     List<Asiento> asientosSegundoPiso = new ArrayList<>();
     private boolean mouseListenerRegistrado = false;
+
+    private List<Asiento> primerPiso = new ArrayList<>();
+    private List<Asiento> segundoPiso = new ArrayList<>();
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -57,6 +62,7 @@ public class SeleccionAsientosVentana extends JFrame {
 
                 // Dibujar asientos según el piso actual
                 if (pisoActual == 1) {
+
                     builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
 
                 } else {
@@ -238,6 +244,7 @@ public class SeleccionAsientosVentana extends JFrame {
             return colorBase;
         }
 
+
         // Método para mapear el tipo de asiento a la enumeración
         private CategoriaAsiento obtenerCategoria(String tipoAsiento) {
             switch (tipoAsiento) {
@@ -249,11 +256,12 @@ public class SeleccionAsientosVentana extends JFrame {
                     throw new IllegalArgumentException("Tipo de asiento desconocido: " + tipoAsiento);
             }
         }
-
-
         // Dibuja los asientos en la interfaz gráfica con números de manera continua
-        public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
+        public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio, List<Asiento> asientos) {
+            int numeroAsiento = 0;
+
             Color color = determinarColor();  // Determina el color del asiento
+
             int numeroAsiento;  // Variable para el número de asiento
             int baseNumeroAsiento = (pisoActual == 1) ? 1 : (36 + 1);  // Establece un número base dependiendo del piso
 
@@ -264,13 +272,13 @@ public class SeleccionAsientosVentana extends JFrame {
             for (int i = 0; i < filas; i++) {
                 // Iteración para las columnas
                 for (int j = 0; j < columnas; j++) {
-                    // El número del asiento sigue el patrón de columna + (fila * número de columnas)
-                    numeroAsiento = baseNumeroAsiento + (j * filas + i);  // Incremento basado en el piso
-
                     // Calcula las coordenadas (x, y) del asiento
                     int x = inicioX + (ancho + espacio) * j;
                     int y = inicioY + (alto + espacio) * i;
 
+                    // El número del asiento sigue el patrón de columna + (fila * número de columnas)
+                    Asiento asiento = asientos.get(numeroAsiento); // Obtiene el asiento correspondiente
+                    numeroAsiento++;
 
                     // Dibuja el asiento
                     g.setColor(color);  // Establece el color del asiento
@@ -332,7 +340,35 @@ public class SeleccionAsientosVentana extends JFrame {
                 }
             }
         }
-    }
+
+        private void inicializarEventos() {
+            panelAsientos.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    Point puntoClic = e.getPoint();
+                    List<Asiento> asientosPorPiso = (pisoActual == 1) ? primerPiso : segundoPiso;
+
+                    for (int i = 0; i < asientosPorPiso.size(); i++) {
+                        Asiento asiento = asientosPorPiso.get(i);
+                        // Calcula las coordenadas y dimensiones del asiento en el panel
+                        Rectangle asientoRect = new Rectangle( /* Coordenadas calculadas para cada asiento */ );
+
+                        if (asientoRect.contains(puntoClic)) {
+                            if (asiento.reservar()) {
+                                repaint();  // Redibuja para reflejar el cambio
+                            } else {
+                                JOptionPane.showMessageDialog(null, "El asiento ya está reservado.");
+                            }
+                            break;  // Rompe el ciclo cuando se encuentra el asiento
+                        }
+                    }
+                }
+
+
+            });
+        }
+    ;}
+
 
 
     public static void main(String[] args) {

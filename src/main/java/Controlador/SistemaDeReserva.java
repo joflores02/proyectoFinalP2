@@ -1,7 +1,6 @@
 package Controlador;
 
 import Modelo.Horario;
-import Vista.InterfazBuilder;
 import Vista.SeleccionAutobusVentana;
 import Vista.VentanaIngresoSistema;
 import java.awt.event.ActionEvent;
