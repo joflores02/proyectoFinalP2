@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;  // Tamaño de cada asiento
@@ -16,6 +18,9 @@ public class SeleccionAsientosVentana extends JFrame {
     private JPanel panelAsientos;
     private JButton btnCambiarPiso;
     private int pisoActual;  // Variable para controlar el piso actual
+
+    private List<Asiento> primerPiso = new ArrayList<>();
+    private List<Asiento> segundoPiso = new ArrayList<>();
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -49,10 +54,10 @@ public class SeleccionAsientosVentana extends JFrame {
 
                 // Dibujar asientos según el piso actual
                 if (pisoActual == 1) {
-                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10);
+                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10, autobus.getPrimerPiso());
                     builder.dibujarAsientosConEspacio(g, 2, 10, 46, 235, 80, 60, 10, 6);
                 } else {
-                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10);  // Primera sección
+                    builder.dibujarAsientos(g, 2, 10, 46, 20, 80, 60, 10, autobus.getSegundoPiso());  // Primera sección
                     builder.dibujarAsientosConEspacio(g, 2, 10, 46, 235, 80, 60, 10, 6);
                 }
             }
@@ -216,14 +221,11 @@ public class SeleccionAsientosVentana extends JFrame {
             return colorBase;
         }
 
-        // Arreglo de Asientos para cada piso
-        List<Asiento> asientosPrimerPiso = new ArrayList<>();
-        List<Asiento> asientosSegundoPiso = new ArrayList<>();
-
         // Dibuja los asientos en la interfaz gráfica con números de manera continua
-        public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
+        public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio, List<Asiento> asientos) {
+            int numeroAsiento = 0;
+
             Color color = determinarColor();  // Determina el color del asiento
-            int numeroAsiento;  // Variable para el número de asiento
             int baseNumeroAsiento = (pisoActual == 1) ? 1 : (38 + 1);  // Establece un número base dependiendo del piso
 
             Font font = new Font("Arial", Font.BOLD, 14);  // Fuente en negrita
@@ -233,20 +235,15 @@ public class SeleccionAsientosVentana extends JFrame {
             for (int i = 0; i < filas; i++) {
                 // Iteración para las columnas
                 for (int j = 0; j < columnas; j++) {
-                    // El número del asiento sigue el patrón de columna + (fila * número de columnas)
-                    numeroAsiento = baseNumeroAsiento + (j * filas + i);  // Incremento basado en el piso
-
                     // Calcula las coordenadas (x, y) del asiento
                     int x = inicioX + (ancho + espacio) * j;
                     int y = inicioY + (alto + espacio) * i;
-                    /*
-                    Asiento asiento;
-                    if (pisoActual == 1) {
-                        asientosPrimerPiso.add(asiento);
-                    } else {
-                        asientosSegundoPiso.add(asiento);
-                    }
-*/
+
+                    // El número del asiento sigue el patrón de columna + (fila * número de columnas)
+                    Asiento asiento = asientos.get(numeroAsiento); // Obtiene el asiento correspondiente
+                    numeroAsiento++;
+
+
                     // Dibuja el asiento
                     g.setColor(color);  // Establece el color del asiento
                     g.fillRect(x, y, ancho, alto);  // Dibuja el asiento
@@ -322,8 +319,33 @@ public class SeleccionAsientosVentana extends JFrame {
                 }
             }
         }
+        private void inicializarEventos() {
+            panelAsientos.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    Point puntoClic = e.getPoint();
+                    List<Asiento> asientosPorPiso = (pisoActual == 1) ? primerPiso : segundoPiso;
 
-    }
+                    for (int i = 0; i < asientosPorPiso.size(); i++) {
+                        Asiento asiento = asientosPorPiso.get(i);
+                        // Calcula las coordenadas y dimensiones del asiento en el panel
+                        Rectangle asientoRect = new Rectangle( /* Coordenadas calculadas para cada asiento */ );
+
+                        if (asientoRect.contains(puntoClic)) {
+                            if (asiento.reservar()) {
+                                repaint();  // Redibuja para reflejar el cambio
+                            } else {
+                                JOptionPane.showMessageDialog(null, "El asiento ya está reservado.");
+                            }
+                            break;  // Rompe el ciclo cuando se encuentra el asiento
+                        }
+                    }
+                }
+
+
+            });
+        }
+    ;}
 
     public static void main(String[] args) {
         Horario horario2 = new Horario("02:00 PM", "08:30 PM");
