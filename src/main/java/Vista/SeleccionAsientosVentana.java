@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;  
@@ -27,6 +28,7 @@ public class SeleccionAsientosVentana extends JFrame {
     private boolean mouseListenerRegistrado = false;
 
     public static Set<Asiento> asientosReservados = new HashSet<>();
+
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -76,6 +78,7 @@ public class SeleccionAsientosVentana extends JFrame {
 
                 // Dibujar asientos según el piso actual
                 if (pisoActual == 1) {
+
                     builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
 
                 } else {
@@ -264,6 +267,7 @@ public class SeleccionAsientosVentana extends JFrame {
             return colorBase;
         }
 
+
         // Método para mapear el tipo de asiento a la enumeración
         private CategoriaAsiento obtenerCategoria(String tipoAsiento) {
             switch (tipoAsiento) {
@@ -288,6 +292,7 @@ public class SeleccionAsientosVentana extends JFrame {
                     for (int j = 0; j < columnas; j++) {
                         // Calcular el número de asiento de manera correcta
                         int numeroAsiento = baseNumeroAsiento + j * filas + i;
+
 
                         int x = inicioX + (ancho + espacio) * j;
                         int y = inicioY + (alto + espacio) * i;
@@ -363,7 +368,35 @@ public class SeleccionAsientosVentana extends JFrame {
                 return; // Salir del bucle después de encontrar el asiento clickeado
             }
         }
-    }
+
+        private void inicializarEventos() {
+            panelAsientos.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    Point puntoClic = e.getPoint();
+                    List<Asiento> asientosPorPiso = (pisoActual == 1) ? primerPiso : segundoPiso;
+
+                    for (int i = 0; i < asientosPorPiso.size(); i++) {
+                        Asiento asiento = asientosPorPiso.get(i);
+                        // Calcula las coordenadas y dimensiones del asiento en el panel
+                        Rectangle asientoRect = new Rectangle( /* Coordenadas calculadas para cada asiento */ );
+
+                        if (asientoRect.contains(puntoClic)) {
+                            if (asiento.reservar()) {
+                                repaint();  // Redibuja para reflejar el cambio
+                            } else {
+                                JOptionPane.showMessageDialog(null, "El asiento ya está reservado.");
+                            }
+                            break;  // Rompe el ciclo cuando se encuentra el asiento
+                        }
+                    }
+                }
+
+
+            });
+        }
+    ;}
+
 
 
 

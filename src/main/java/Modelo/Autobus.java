@@ -11,7 +11,11 @@ public class Autobus {
     private int numPisos;
     private List<Asiento> primerPiso;
     private List<Asiento> segundoPiso;
+
     private List<Asiento> asientosReservados;
+
+    private List<Asiento> asientos;
+
     private String lugarDeInicio;  // Lugar de partida
     private String lugarDeDestino; // Destino
     private Horario horario;
@@ -42,6 +46,10 @@ public class Autobus {
         for (int i = 1; i <= asientosPorPiso; i++) {
             piso.add(new Asiento(i, categoria, i*10,i*10));
         }
+        asientos.addAll(piso);
+        if (numPisos == 2) {
+            asientos.addAll(segundoPiso);
+        }
     }
 
     // Métodos para obtener información del autobús
@@ -68,6 +76,8 @@ public class Autobus {
     public List<Asiento> getSegundoPiso() {
         return segundoPiso;
     }
+
+    public List<Asiento> getAsientos(){return asientos;}
 
     public String getLugarDeInicio() {
         return lugarDeInicio;
