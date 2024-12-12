@@ -3,6 +3,8 @@ package Modelo;
 public class Asiento {
     private int numero;
     private boolean estadoReserva;
+    private boolean ocupado;
+    private boolean seleccionado;
     private CategoriaAsiento categoria;
     private double precio;
     private int x;
@@ -14,8 +16,8 @@ public class Asiento {
         this.estadoReserva = false;
         this.categoria = categoria;
         this.precio = categoria.getPrecio();
-        this.x = 0;
-        this.y = 0;
+        this.x = x;
+        this.y = y;
     }
 
 
@@ -68,7 +70,10 @@ public class Asiento {
     }
 
     public boolean isOcupado() {
-        return ocupado;
+        if (estadoReserva) {
+            return ocupado;
+        }
+        return false;
     }
 
     public boolean isSeleccionado() {
