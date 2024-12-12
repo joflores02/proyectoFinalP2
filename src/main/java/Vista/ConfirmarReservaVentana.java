@@ -2,6 +2,8 @@ package Vista;
 
 import Modelo.CategoriaAsiento;
 import Modelo.Asiento;
+import Vista.SeleccionAsientosVentana;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,12 +28,12 @@ public class ConfirmarReservaVentana extends JDialog {
 
         // Panel para los detalles de los asientos (en base a asientos reservados)
         JPanel panelDetalles = new JPanel();
-        panelDetalles.setLayout(new GridLayout(3, 1, 5, 5)); // 3 filas para los asientos
-        //for asiento in asientosconfirmados
-        for (int i = 1; i <= 3; i++) {
-            JLabel detalle = new JLabel("Asiento " + i + " - Categoría    $");
+        panelDetalles.setLayout(new GridLayout(SeleccionAsientosVentana.asientosReservados.size(), 1, 5, 5)); // una filas por cada asiento
+        for (Asiento asiento : SeleccionAsientosVentana.asientosReservados){
+            JLabel detalle = new JLabel("Asiento " + asiento.getCategoria()+asiento.getPrecio());
             panelDetalles.add(detalle);
         }
+
         panelPrincipal.add(panelDetalles);
 
         // Espacio entre el total y los asientos

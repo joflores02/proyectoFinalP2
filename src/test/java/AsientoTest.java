@@ -28,5 +28,7 @@ public class AsientoTest {
         boolean resultado = asiento.reservar();
         assertFalse(resultado);
     }
+    @Test
+    public void imprimirListaReserva(){}
 
 }

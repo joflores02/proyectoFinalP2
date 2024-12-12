@@ -11,7 +11,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;  
@@ -21,8 +24,9 @@ public class SeleccionAsientosVentana extends JFrame {
     private int pisoActual;  // Variable para controlar el piso actual
     List<Asiento> asientosPrimerPiso = new ArrayList<>();
     List<Asiento> asientosSegundoPiso = new ArrayList<>();
-    List<Asiento> asientosReservados = new ArrayList<>();
     private boolean mouseListenerRegistrado = false;
+
+    public static Set<Asiento> asientosReservados = new HashSet<>();
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -42,6 +46,18 @@ public class SeleccionAsientosVentana extends JFrame {
 
         // Subpanel para el diseño del autobús
         panelAsientos = new JPanel() {
+
+            protected void inicializarMouseListener() {
+                panelAsientos.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        manejarClic(e.getX(), e.getY());
+                        repaint();  // Forzar el repintado después de manejar el clic
+                        System.out.println("Clic detectado en posición: (" + e.getX() + ", " + e.getY() + ")");
+                    }
+                });
+            }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -63,7 +79,7 @@ public class SeleccionAsientosVentana extends JFrame {
                     builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
 
                 } else {
-                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);  
+                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
 
                 }
 
@@ -302,24 +318,17 @@ public class SeleccionAsientosVentana extends JFrame {
             List<Asiento> asientosActuales = (pisoActual == 1) ? asientosPrimerPiso : asientosSegundoPiso;
 
             for (Asiento asiento : asientosActuales) {
-                Color color;
-                if (asiento.isOcupado()) {
-                    color = Color.BLACK;
-                } else {
-                    color = determinarColor();
-                }
-
-                // Dibujar asiento
-                g.setColor(color);
-                g.fillRect(asiento.getX(), asiento.getY(), ancho, alto);
+                // Establecer el color según el estado del asiento
+                g.setColor(asiento.isOcupado() ? Color.BLACK : determinarColor());
+                g.fillRect(asiento.getX(), asiento.getY(), TAMANO_ASIENTO, TAMANO_ASIENTO);
 
                 // Dibujar número de asiento
-                g.setColor(Color.BLACK);
+                g.setColor(Color.WHITE);
                 String numeroAsientoStr = Integer.toString(asiento.getNumero());
                 g.drawString(
                         numeroAsientoStr,
-                        asiento.getX() + ancho / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2,
-                        asiento.getY() + alto / 2 + g.getFontMetrics().getHeight() / 4
+                        asiento.getX() + TAMANO_ASIENTO / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2,
+                        asiento.getY() + TAMANO_ASIENTO / 2 + g.getFontMetrics().getHeight() / 4
                 );
             }
         }
@@ -331,15 +340,15 @@ public class SeleccionAsientosVentana extends JFrame {
         List<Asiento> asientosActuales = (pisoActual == 1) ? asientosPrimerPiso : asientosSegundoPiso;
 
         for (Asiento asiento : asientosActuales) {
-            // Rango de detección más preciso
-            if (x >= asiento.getX() && x <= asiento.getX() + 80 &&
-                    y >= asiento.getY() && y <= asiento.getY() + 60) {
+            // Verificar si el clic ocurrió dentro de las coordenadas del asiento
+            if (x >= asiento.getX() && x <= asiento.getX() + TAMANO_ASIENTO &&
+                    y >= asiento.getY() && y <= asiento.getY() + TAMANO_ASIENTO) {
 
                 // Cambiar el estado del asiento
                 boolean nuevoEstado = !asiento.isOcupado();
                 asiento.setOcupado(nuevoEstado);
 
-                // Gestionar lista de asientos reservados
+                // Actualizar el Set de asientos reservados
                 if (nuevoEstado) {
                     asientosReservados.add(asiento);
                     System.out.println("Reservado: Asiento " + asiento.getNumero());
@@ -347,48 +356,14 @@ public class SeleccionAsientosVentana extends JFrame {
                     asientosReservados.remove(asiento);
                     System.out.println("Liberado: Asiento " + asiento.getNumero());
                 }
+                System.out.println(asientosReservados);
 
                 // Forzar repintado
                 repaint();
-                return;
+                return; // Salir del bucle después de encontrar el asiento clickeado
             }
         }
     }
-
-    private void actualizarColor(Asiento asiento) {
-
-        // Forzar repintado
-        revalidate();
-        repaint();
-    }
-
-    private void verificarClicEnAsientos(List<Asiento> asientos, int x, int y) {
-        for (Asiento asiento : asientos) {
-            // Ajustar el rango de detección de clic
-            int margenTolerancia = 5;  // Margen de tolerancia para el clic
-            if (x >= (asiento.getX() - margenTolerancia) &&
-                    x <= (asiento.getX() + 80 + margenTolerancia) &&
-                    y >= (asiento.getY() - margenTolerancia) &&
-                    y <= (asiento.getY() + 60 + margenTolerancia)) {
-
-                // Cambiar estado del asiento
-                boolean nuevoEstado = !asiento.isOcupado();
-                asiento.setOcupado(nuevoEstado);
-
-                // Opcional: Manejar lista de asientos reservados
-                if (nuevoEstado) {
-                    asientosReservados.add(asiento);
-                } else {
-                    asientosReservados.remove(asiento);
-                }
-
-                // Forzar repintado
-                repaint();
-                return;  // Salir después de procesar un asiento
-            }
-        }
-    }
-
 
 
 
