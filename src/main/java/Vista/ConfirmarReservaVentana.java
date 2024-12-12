@@ -27,6 +27,7 @@ public class ConfirmarReservaVentana extends JDialog {
         // Panel para los detalles de los asientos (en base a asientos reservados)
         JPanel panelDetalles = new JPanel();
         panelDetalles.setLayout(new GridLayout(3, 1, 5, 5)); // 3 filas para los asientos
+        //for asiento in asientosconfirmados
         for (int i = 1; i <= 3; i++) {
             JLabel detalle = new JLabel("Asiento " + i + " - Categoría    $");
             panelDetalles.add(detalle);

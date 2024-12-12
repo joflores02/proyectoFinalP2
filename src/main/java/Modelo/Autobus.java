@@ -11,6 +11,7 @@ public class Autobus {
     private int numPisos;
     private List<Asiento> primerPiso;
     private List<Asiento> segundoPiso;
+    private List<Asiento> asientosReservados;
     private String lugarDeInicio;  // Lugar de partida
     private String lugarDeDestino; // Destino
     private Horario horario;
@@ -39,7 +40,7 @@ public class Autobus {
 
     private void inicializarAsientosPorPiso(List<Asiento> piso, int asientosPorPiso, CategoriaAsiento categoria) {
         for (int i = 1; i <= asientosPorPiso; i++) {
-            piso.add(new Asiento(i, categoria));
+            piso.add(new Asiento(i, categoria, i*10,i*10));
         }
     }
 
