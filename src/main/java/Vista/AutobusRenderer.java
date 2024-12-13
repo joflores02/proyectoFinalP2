@@ -10,12 +10,19 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * La clase AutobusRenderer se encarga de dibujar la representación gráfica de un autobús en la interfaz.
+ * Esto incluye la estructura del autobús (como los pisos y escaleras) y los asientos con sus respectivas categorías y estados.
+ */
 public class AutobusRenderer {
     private Autobus autobus;
     private int pisoActual;
     private final int TAMANO_ASIENTO = 50;
 
+    /**
+     * Dibuja la estructura del autobús, incluyendo los pisos y escaleras.
+     * @param g El objeto Graphics utilizado para dibujar la interfaz gráfica.
+     */
     private void dibujarEstructuraAutobus(Graphics g) {
         int subPanelWidth = 980;
         int subPanelHeight = 380;
@@ -104,6 +111,12 @@ public class AutobusRenderer {
             g.drawString("segundo piso", 880, 200);
         }
     }
+
+    /**
+     * Determina el color de un asiento dependiendo de su categoría y si está ocupado.
+     * @param asiento El asiento cuyo color debe determinarse.
+     * @return El color del asiento según su estado (ocupado o categoría).
+     */
     public Color determinarColorAsiento(Asiento asiento) {
         if (asiento.isOcupado()) {
             return Color.BLACK; // Color para asientos ocupados
@@ -120,6 +133,12 @@ public class AutobusRenderer {
         }
     }
 
+    /**
+     * Dibuja los asientos en la interfaz gráfica, asignando colores según su categoría.
+     * @param g El objeto Graphics utilizado para dibujar los asientos.
+     * @param asientos La lista de asientos a dibujar.
+     * @param tamanoAsiento El tamaño de los asientos a dibujar.
+     */
     public void dibujarAsientos(Graphics g, List<Asiento> asientos, int tamanoAsiento) {
         for (Asiento asiento : asientos) {
             // Determinar el color del asiento
