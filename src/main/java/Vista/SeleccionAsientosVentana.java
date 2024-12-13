@@ -14,11 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
-import Vista.AutobusRenderer;
-
-
+/**
+ * Ventana que permite a los usuarios seleccionar asientos en un autobús de acuerdo con el piso elegido.
+ * La clase maneja la interacción con los asientos, incluyendo la selección y reserva, y ofrece la opción de cambiar de piso.
+ * Los asientos reservados se gestionan utilizando un conjunto estático de asientos reservados.
+ */
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;
     private JPanel panelAsientos;
@@ -28,9 +28,15 @@ public class SeleccionAsientosVentana extends JFrame {
     private AutobusRenderer renderer = new AutobusRenderer();
     private Autobus autobus;
 
+    /**
+     * Conjunto de asientos reservados, accesible estáticamente.
+     */
     public static Set<Asiento> asientosReservados = new HashSet<>();
 
-
+    /**
+     * Constructor que inicializa la ventana para la selección de asientos.
+     * @param autobus Autobús cuya configuración de asientos se va a mostrar.
+     */
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
         this.pisoActual = 1;  // Empezamos en el primer piso
@@ -50,7 +56,6 @@ public class SeleccionAsientosVentana extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
 
                 // Seleccionar la lista de asientos según el piso actual
                 List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
@@ -88,9 +93,10 @@ public class SeleccionAsientosVentana extends JFrame {
         add(panelPrincipal);
     }
 
-    // Método que se activa al presionar el botón de cambio de piso
+    /**
+     * Cambia el piso actual entre el primero y segundo.
+     */
     private void cambiarDePiso() {
-
         if (pisoActual == 1) {
             pisoActual = 2;
         } else {
@@ -104,8 +110,9 @@ public class SeleccionAsientosVentana extends JFrame {
         repaint();
     }
 
-
-    // Clase interna para manejar los asientos
+    /**
+     * Clase interna que permite la creación y configuración de asientos con propiedades específicas.
+     */
     private class AsientoBuilder {
         private String tipoAsiento;
         private Color colorBase;
@@ -113,45 +120,71 @@ public class SeleccionAsientosVentana extends JFrame {
         private Color colorSalonCama;
         private Color colorReservado;
 
-        // Establece el tipo de asiento
+        /**
+         * Establece el tipo de asiento (Semi-Cama, Salón-Cama, etc.).
+         * @param tipoAsiento Tipo de asiento.
+         * @return La instancia actual de AsientoBuilder.
+         */
         public AsientoBuilder setTipoAsiento(String tipoAsiento) {
             this.tipoAsiento = tipoAsiento;
             return this;
         }
 
-        // Establece el color base de los asientos
+        /**
+         * Establece el color base de los asientos.
+         * @param colorBase Color base.
+         * @return La instancia actual de AsientoBuilder.
+         */
         public AsientoBuilder setColorBase(Color colorBase) {
             this.colorBase = colorBase;
             return this;
         }
 
-        // Establece el color de los asientos Semi-Cama
+        /**
+         * Establece el color de los asientos Semi-Cama.
+         * @param colorSemiCama Color de asientos Semi-Cama.
+         * @return La instancia actual de AsientoBuilder.
+         */
         public AsientoBuilder setColorSemiCama(Color colorSemiCama) {
             this.colorSemiCama = colorSemiCama;
             return this;
         }
 
-        // Establece el color de los asientos Salón-Cama
+        /**
+         * Establece el color de los asientos Salón-Cama.
+         * @param colorSalonCama Color de asientos Salón-Cama.
+         * @return La instancia actual de AsientoBuilder.
+         */
         public AsientoBuilder setColorSalonCama(Color colorSalonCama) {
             this.colorSalonCama = colorSalonCama;
             return this;
         }
-        // Establece el color de los asientos reservados
+
+        /**
+         * Establece el color de los asientos reservados.
+         * @param colorReservado Color de asientos reservados.
+         * @return La instancia actual de AsientoBuilder.
+         */
         public AsientoBuilder setColorReservado(Color colorReservado) {
             this.colorReservado = colorReservado;
             return this;
         }
 
-        // Determina el color del asiento según el tipo seleccionado
+        /**
+         * Determina el color de un asiento basado en su tipo.
+         * @return El color adecuado según el tipo de asiento.
+         */
         private Color determinarColor() {
             if ("Semi-Cama".equals(tipoAsiento)) return colorSemiCama;
             if ("Salón-Cama".equals(tipoAsiento)) return colorSalonCama;
-            // if (asiento.isOcupado()) return colorReservado;
             return colorBase;
         }
 
-
-        // Método para mapear el tipo de asiento a la enumeración
+        /**
+         * Mapea el tipo de asiento a la categoría correspondiente.
+         * @param tipoAsiento Tipo de asiento como cadena.
+         * @return La categoría de asiento correspondiente.
+         */
         private CategoriaAsiento obtenerCategoria(String tipoAsiento) {
             switch (tipoAsiento) {
                 case "Semi-Cama":
@@ -163,7 +196,11 @@ public class SeleccionAsientosVentana extends JFrame {
             }
         }
     }
-    // Método para abrir la ventana de confirmación
+
+    /**
+     * Abre una ventana de confirmación de reserva si se han seleccionado asientos.
+     * Muestra un mensaje de error si no se han reservado asientos.
+     */
     private void abrirVentanaConfirmacion() {
         if (asientosReservados.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No hay asientos reservados.", "Error", JOptionPane.WARNING_MESSAGE);
@@ -173,6 +210,12 @@ public class SeleccionAsientosVentana extends JFrame {
         }
     }
 
+    /**
+     * Maneja los clics sobre los asientos en la interfaz gráfica.
+     * Cambia el estado de un asiento (ocupado o libre) y actualiza la lista de asientos reservados.
+     * @param x Coordenada X del clic.
+     * @param y Coordenada Y del clic.
+     */
     public void manejarClic(int x, int y) {
         // Obtener la lista de asientos del piso actual
         List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
@@ -199,28 +242,8 @@ public class SeleccionAsientosVentana extends JFrame {
                     asientosReservados.remove(asiento);
                     System.out.println("Liberado: Asiento " + asiento.getNumero());
                 }
-                System.out.println(asientosReservados);
-
-                // Forzar repintado
-                repaint();
-                break; // Salir del bucle después de encontrar el asiento clickeado
+                System.out.println(asientosReservados.size() + " asientos reservados.");
             }
         }
-        // Si el clic no fue sobre un asiento, se podría manejar de alguna manera, como imprimir un mensaje
-        if (!clicEnAsiento) {
-            System.out.println("Clic fuera de los asientos.");
-        }
-    }
-
-
-
-    public static void main(String[] args) {
-        Horario horario2 = new Horario("02:00 PM", "08:30 PM");
-        Autobus autobus1 = Autobus.Factory.crearAutobus("A1", 2, "Concepción", "Santiago", horario2, "Premium"); 
-
-        SwingUtilities.invokeLater(() -> {
-            SeleccionAsientosVentana ventana = new SeleccionAsientosVentana(autobus1);
-            ventana.setVisible(true);
-        });
     }
 }
