@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 import Vista.AutobusRenderer;
 
 
@@ -26,6 +29,7 @@ public class SeleccionAsientosVentana extends JFrame {
     private Autobus autobus;
 
     public static Set<Asiento> asientosReservados = new HashSet<>();
+
 
     public SeleccionAsientosVentana(Autobus autobus) {
         this.autobus = autobus;
@@ -46,6 +50,7 @@ public class SeleccionAsientosVentana extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+
 
                 // Seleccionar la lista de asientos según el piso actual
                 List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
@@ -144,6 +149,7 @@ public class SeleccionAsientosVentana extends JFrame {
             // if (asiento.isOcupado()) return colorReservado;
             return colorBase;
         }
+
 
         // Método para mapear el tipo de asiento a la enumeración
         private CategoriaAsiento obtenerCategoria(String tipoAsiento) {
