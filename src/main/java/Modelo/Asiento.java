@@ -13,7 +13,6 @@ public class Asiento {
 
     public Asiento(int numero, CategoriaAsiento categoria, int x, int y) {
         this.numero = numero;
-        this.estadoReserva = false;
         this.categoria = categoria;
         this.precio = categoria.getPrecio();
         this.x = x;
@@ -25,9 +24,6 @@ public class Asiento {
         return numero;
     }
 
-    public boolean estadoReserva() {
-        return estadoReserva;
-    }
 
     public CategoriaAsiento getCategoria() {
         return categoria;
@@ -73,17 +69,9 @@ public class Asiento {
         return ocupado;
     }
 
-    public boolean isSeleccionado() {
-        return seleccionado;
-    }
-
-    public void setSeleccionado(boolean seleccionado) {
-        this.seleccionado = seleccionado;
-    }
 
     @Override
     public String toString() {
-        return "Asiento " + numero + " (" + categoria + ", $" + precio + ") - " +
-                (estadoReserva ? "Reservado" : "Disponible");
+        return "Asiento " + numero + " (" + categoria + ", $" + precio + ")";
     }
 }
