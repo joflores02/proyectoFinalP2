@@ -26,7 +26,6 @@ public class Autobus {
         this.lugarDeInicio = lugarDeInicio;
         this.lugarDeDestino = lugarDeDestino;
         this.horario = horario;
-
     }
 
     public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso) {
