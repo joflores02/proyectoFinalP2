@@ -1,14 +1,28 @@
 package Vista;
 
-
 import Modelo.Asiento;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Ventana de confirmación de reserva de asientos en el autobús.
+ * Esta ventana muestra los detalles de la compra, incluyendo los asientos reservados,
+ * el precio de cada uno y el total de la compra. También incluye un botón para confirmar
+ * la reserva.
+ *
+ */
 public class ConfirmarReservaVentana extends JDialog {
+    /**
+     * Valor total de la reserva.
+     */
     double valor_total = 0.0;
 
+    /**
+     * Constructor que inicializa la ventana de confirmación de reserva.
+     *
+     * @param parent El marco principal de la aplicación.
+     */
     public ConfirmarReservaVentana(JFrame parent) {
         super(parent, "Confirmar Reserva", true);
         setSize(400, 300);
@@ -28,9 +42,9 @@ public class ConfirmarReservaVentana extends JDialog {
 
         // Panel para los detalles de los asientos (en base a asientos reservados)
         JPanel panelDetalles = new JPanel();
-        panelDetalles.setLayout(new GridLayout(SeleccionAsientosVentana.asientosReservados.size(), 1, 5, 5)); // una filas por cada asiento
-        for (Asiento asiento : SeleccionAsientosVentana.asientosReservados){
-            JLabel detalle = new JLabel("Asiento " + asiento.getNumero()+" "+asiento.getCategoria()+"    "+asiento.getPrecio());
+        panelDetalles.setLayout(new GridLayout(SeleccionAsientosVentana.asientosReservados.size(), 1, 5, 5)); // Una fila por cada asiento
+        for (Asiento asiento : SeleccionAsientosVentana.asientosReservados) {
+            JLabel detalle = new JLabel("Asiento " + asiento.getNumero() + " " + asiento.getCategoria() + "    " + asiento.getPrecio());
             valor_total += asiento.getPrecio();
             panelDetalles.add(detalle);
         }
@@ -41,7 +55,7 @@ public class ConfirmarReservaVentana extends JDialog {
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Total
-        JLabel total = new JLabel("Total:    $"+ valor_total);
+        JLabel total = new JLabel("Total:    $" + valor_total);
         total.setFont(new Font("Arial", Font.BOLD, 14));
         panelPrincipal.add(total);
 
@@ -64,6 +78,11 @@ public class ConfirmarReservaVentana extends JDialog {
         add(panelPrincipal, BorderLayout.CENTER);
     }
 
+    /**
+     * Método principal para mostrar la ventana de confirmación de reserva.
+     *
+     * @param args Argumentos de línea de comandos.
+     */
     public static void main(String[] args) {
         // Crear el frame principal
         JFrame mainFrame = new JFrame();
