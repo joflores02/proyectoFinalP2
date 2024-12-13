@@ -11,6 +11,10 @@ import javax.swing.*;
 
 import Modelo.Autobus;
 
+/**
+ * Clase principal que controla el flujo de la aplicación de reserva de autobuses.
+ * Gestiona la navegación entre ventanas, la inicialización de datos y la lógica principal.
+ */
 public class SistemaDeReserva {
     private JFrame frame;
     private VentanaIngresoSistema ventanaInicial;
@@ -19,6 +23,13 @@ public class SistemaDeReserva {
     private List<String> lugaresDestino;
     private List<Autobus> autobuses;
 
+
+    /**
+     * Constructor de la clase SistemaDeReserva.
+     * Inicializa las ventanas, listas de lugares y autobuses, y configura los eventos.
+     *
+     * @param frame La ventana principal de la aplicación.
+     */
     public SistemaDeReserva(JFrame frame) {
         this.frame = frame;
         this.ventanaInicial = new VentanaIngresoSistema();
@@ -86,21 +97,29 @@ public class SistemaDeReserva {
         frame.repaint();
     }
 
-    // Método para cambiar a la ventana de ingreso
+    /**
+     * Cambia la ventana actual a la ventana de ingreso del sistema.
+     */
     public void cambiarAVentanaInicial() {
         frame.setContentPane(ventanaInicial);
         frame.revalidate();
         frame.repaint();
     }
 
-    //Método para avanzar a selección de asientos
+    /**
+     * Cambia la ventana actual a la ventana de selección de autobuses.
+     */
     private void cambiarASeleccionAutobus() {
         frame.setContentPane(ventanaSeleccionAutobus);
         frame.revalidate();
         frame.repaint();
     }
 
-
+    /**
+     * Método principal que inicia la aplicación.
+     *
+     * @param args Argumentos de línea de comandos
+     */
     public static void main(String[] args) {
         JFrame frame = new JFrame("Sistema de Reserva");
         frame.setSize(1120, 652);

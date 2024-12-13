@@ -2,30 +2,50 @@ package Modelo;
 
 import java.util.List;
 
+/**
+ * Clase que representa un horario, incluyendo la hora de salida y llegada de un autobús,
+ * así como una lista de horarios disponibles.
+ */
 public class Horario {
-    //Aquí asignamos día y hora, de partida y llegada de cada bus
-    //También, si es que el usuario elige cierto día,
-    // deberían aparecer en pantalla todos los buses disponibles ese día (pero eso se ve en interfaz)
-
     private String horaLlegada;
     private String horaSalida;
     private List<Horario> horarios;
-
     private String dia;
 
+    /**
+     * Constructor para crear un horario con la hora de salida y llegada.
+     *
+     * @param horaSalida La hora de salida del autobús.
+     * @param horaLlegada La hora de llegada del autobús.
+     */
     public Horario(String horaSalida, String horaLlegada) {
         this.horaSalida = horaSalida;
         this.horaLlegada = horaLlegada;
     }
 
+    /**
+     * Agrega un horario a la lista de horarios disponibles.
+     *
+     * @param horario El horario a agregar.
+     */
     public void agregarHorario(Horario horario) {
         horarios.add(horario);
     }
 
+    /**
+     * Obtiene la lista de horarios disponibles.
+     *
+     * @return Una lista de horarios.
+     */
     public List<Horario> getHorarios() {
         return horarios;
     }
 
+    /**
+     * Devuelve una representación en cadena del horario, incluyendo la hora de salida y llegada.
+     *
+     * @return Una cadena que representa el horario en el formato "horaSalida - horaLlegada".
+     */
     @Override
     public String toString() {
         return horaSalida + " - " + horaLlegada;
