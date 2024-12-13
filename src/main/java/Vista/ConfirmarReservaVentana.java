@@ -1,14 +1,14 @@
 package Vista;
 
-import Modelo.CategoriaAsiento;
-import Modelo.Asiento;
-import Vista.SeleccionAsientosVentana;
 
+import Modelo.Asiento;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ConfirmarReservaVentana extends JDialog {
+    double valor_total = 0.0;
+
     public ConfirmarReservaVentana(JFrame parent) {
         super(parent, "Confirmar Reserva", true);
         setSize(400, 300);
@@ -30,7 +30,8 @@ public class ConfirmarReservaVentana extends JDialog {
         JPanel panelDetalles = new JPanel();
         panelDetalles.setLayout(new GridLayout(SeleccionAsientosVentana.asientosReservados.size(), 1, 5, 5)); // una filas por cada asiento
         for (Asiento asiento : SeleccionAsientosVentana.asientosReservados){
-            JLabel detalle = new JLabel("Asiento " + asiento.getCategoria()+asiento.getPrecio());
+            JLabel detalle = new JLabel("Asiento " + asiento.getNumero()+" "+asiento.getCategoria()+"    "+asiento.getPrecio());
+            valor_total += asiento.getPrecio();
             panelDetalles.add(detalle);
         }
 
@@ -40,7 +41,7 @@ public class ConfirmarReservaVentana extends JDialog {
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Total
-        JLabel total = new JLabel("Total:    $--------");
+        JLabel total = new JLabel("Total:    $"+ valor_total);
         total.setFont(new Font("Arial", Font.BOLD, 14));
         panelPrincipal.add(total);
 

@@ -143,27 +143,41 @@ public class Autobus {
 
     public static class Factory {
         public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario, String categoria) {
+            Autobus autobus;
+
             if (numPisos == 1) {
-                // Si la categoría es "Premium", se crea un autobús premium de 1 piso
                 if (categoria.equals("Premium")) {
-                    return new Autobus(id, 38, "Premium", 1, lugarDeInicio, lugarDeDestino, horario);
+                    autobus = new Autobus(id, 38, "Premium", 1, lugarDeInicio, lugarDeDestino, horario);
                 } else if (categoria.equals("Económico")) {
-                    return new Autobus(id, 38, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
+                    autobus = new Autobus(id, 38, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
                 } else {
                     throw new IllegalArgumentException("Categoría no soportada para autobuses de 1 piso: " + categoria);
                 }
             } else if (numPisos == 2) {
                 if (categoria.equals("Económico")) {
-                    return new Autobus(id, 76, "Económico", 2, lugarDeInicio, lugarDeDestino, horario);
+                    autobus = new Autobus(id, 76, "Económico", 2, lugarDeInicio, lugarDeDestino, horario);
                 } else if (categoria.equals("Premium")) {
-                    return new Autobus(id, 76, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
+                    autobus = new Autobus(id, 76, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
                 } else {
                     throw new IllegalArgumentException("Categoría no soportada para autobuses de 2 pisos: " + categoria);
                 }
             } else {
                 throw new IllegalArgumentException("Número de pisos no soportado: " + numPisos);
             }
+
+            // Inicializar los asientos después de crear el autobús
+            autobus.inicializarAsientos(
+                    CategoriaAsiento.SEMI_CAMA,  // Categoría para el primer piso
+                    CategoriaAsiento.SALON_CAMA,  // Categoría para el segundo piso (si aplica)
+                    5, 4,  // Filas y columnas
+                    50, 50,  // Coordenadas de inicio
+                    50, 50,  // Ancho y alto de los asientos
+                    10       // Espacio entre asientos
+            );
+
+            return autobus;
         }
     }
+
 
 }
