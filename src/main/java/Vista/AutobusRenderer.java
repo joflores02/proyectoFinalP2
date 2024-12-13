@@ -15,8 +15,6 @@ public class AutobusRenderer {
     private Autobus autobus;
     private int pisoActual;
     private final int TAMANO_ASIENTO = 50;
-    List<Asiento> asientosPrimerPiso = new ArrayList<>();
-    List<Asiento> asientosSegundoPiso = new ArrayList<>();
 
     private void dibujarEstructuraAutobus(Graphics g) {
         int subPanelWidth = 980;
@@ -106,52 +104,36 @@ public class AutobusRenderer {
             g.drawString("segundo piso", 880, 200);
         }
     }
-    public void dibujarAsientos(Graphics g, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
-        // Limpiar solo si es la primera vez que se dibuja
-        if ((pisoActual == 1 && asientosPrimerPiso.isEmpty()) ||
-                (pisoActual == 2 && asientosSegundoPiso.isEmpty())) {
-
-            int baseNumeroAsiento = (pisoActual == 1) ? 1 : 37;  // Correcto número base de asiento
-
-            for (int i = 0; i < filas; i++) {
-                for (int j = 0; j < columnas; j++) {
-                    //CategoriaAsiento categoria = CategoriaAsiento.fromString(tipoAsiento);
-                    // Calcular el número de asiento de manera correcta
-                    int numeroAsiento = baseNumeroAsiento + j * filas + i;
-
-                    int x = inicioX + (ancho + espacio) * j;
-                    int y = inicioY + (alto + espacio) * i;
-
-                    // Ajuste para separación de filas
-                    if (i > 1) {
-                        y += 65;
-                    }
-                    Asiento nuevoAsiento = new Asiento(numeroAsiento, SEMI_CAMA, x, y);
-
-                    // Agregar asiento a la lista correspondiente
-                    if (pisoActual == 1) {
-                        asientosPrimerPiso.add(nuevoAsiento);
-                    } else {
-                        asientosSegundoPiso.add(nuevoAsiento);
-                    }
-                }
-            }
+    public Color determinarColorAsiento(Asiento asiento) {
+        if (asiento.isOcupado()) {
+            return Color.BLACK; // Color para asientos ocupados
         }
 
-        // Dibujar asientos de la lista correspondiente
-        List<Asiento> asientosActuales = (pisoActual == 1) ? asientosPrimerPiso : asientosSegundoPiso;
+        // Determinar el color según la categoría
+        switch (asiento.getCategoria()) {
+            case SEMI_CAMA:
+                return Color.YELLOW; // Color para Semi-Cama
+            case SALON_CAMA:
+                return Color.PINK; // Color para Salón-Cama
+            default:
+                return Color.WHITE; // Color por defecto
+        }
+    }
 
-        for (Asiento asiento : asientosActuales) {
-            // Establecer el color según el estado del asiento
-            // g.setColor(asiento.isOcupado() ? Color.BLACK : determinarColor());
+    public void dibujarAsientos(Graphics g, List<Asiento> asientos, int tamanoAsiento) {
+        for (Asiento asiento : asientos) {
+            // Determinar el color del asiento
+            g.setColor(determinarColorAsiento(asiento));
+
+            // Dibujar el asiento
             g.fillRect(asiento.getX(), asiento.getY(), TAMANO_ASIENTO, TAMANO_ASIENTO);
 
-            // Dibujar número de asiento
+            // Dibujar el número del asiento
             g.setColor(Color.WHITE);
-            String numeroAsientoStr = Integer.toString(asiento.getNumero());
+            String numeroAsiento = Integer.toString(asiento.getNumero());
             g.drawString(
-                    numeroAsientoStr,
-                    asiento.getX() + TAMANO_ASIENTO / 2 - g.getFontMetrics().stringWidth(numeroAsientoStr) / 2,
+                    numeroAsiento,
+                    asiento.getX() + TAMANO_ASIENTO / 2 - g.getFontMetrics().stringWidth(numeroAsiento) / 2,
                     asiento.getY() + TAMANO_ASIENTO / 2 + g.getFontMetrics().getHeight() / 4
             );
         }

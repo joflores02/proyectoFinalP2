@@ -28,20 +28,36 @@ public class Autobus {
         this.horario = horario;
     }
 
-    public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso) {
+    public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
         int asientosPorPiso = numAsientos / numPisos;
-        inicializarAsientosPorPiso(primerPiso, asientosPorPiso, categoriaPrimerPiso);
+
+        inicializarAsientosPorPiso(primerPiso, asientosPorPiso, filas, columnas, inicioX, inicioY, ancho, alto, espacio, categoriaPrimerPiso);
 
         if (numPisos == 2) {
-            inicializarAsientosPorPiso(segundoPiso, asientosPorPiso, categoriaSegundoPiso);
+            inicializarAsientosPorPiso(segundoPiso, asientosPorPiso, filas, columnas, inicioX, inicioY, ancho, alto, espacio, categoriaSegundoPiso);
         }
     }
 
-    private void inicializarAsientosPorPiso(List<Asiento> piso, int asientosPorPiso, CategoriaAsiento categoria) {
-        for (int i = 1; i <= asientosPorPiso; i++) {
-            piso.add(new Asiento(i, categoria, i*10,i*10));
+
+    private void inicializarAsientosPorPiso(List<Asiento> piso, int asientosPorPiso, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio, CategoriaAsiento categoria) {
+        int numeroAsiento = 1;
+
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if (numeroAsiento > asientosPorPiso) {
+                    return; // Detener si se alcanzó el número total de asientos para este piso
+                }
+
+                int x = inicioX + j * (ancho + espacio);
+                int y = inicioY + i * (alto + espacio);
+
+                // Crear y agregar el asiento
+                piso.add(new Asiento(numeroAsiento, categoria, x, y));
+                numeroAsiento++;
+            }
         }
     }
+
 
     // Métodos para obtener información del autobús
     public String getId() {

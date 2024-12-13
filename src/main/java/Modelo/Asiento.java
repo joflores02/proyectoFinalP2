@@ -70,10 +70,7 @@ public class Asiento {
     }
 
     public boolean isOcupado() {
-        if (estadoReserva) {
-            return ocupado;
-        }
-        return false;
+        return ocupado;
     }
 
     public boolean isSeleccionado() {

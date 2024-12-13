@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import Vista.AutobusRenderer;
 
 
 public class SeleccionAsientosVentana extends JFrame {
@@ -20,8 +21,7 @@ public class SeleccionAsientosVentana extends JFrame {
     private JPanel panelAsientos;
     private JButton btnCambiarPiso;
     private int pisoActual;  // Variable para controlar el piso actual
-    List<Asiento> asientosPrimerPiso = new ArrayList<>();
-    List<Asiento> asientosSegundoPiso = new ArrayList<>();
+    private AutobusRenderer renderer = new AutobusRenderer();
     private boolean mouseListenerRegistrado = false;
     private Autobus autobus;
 
@@ -61,40 +61,11 @@ public class SeleccionAsientosVentana extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
 
-                // Dibujar la estructura del autobús
-                dibujarEstructuraAutobus(g);
+                // Seleccionar la lista de asientos según el piso actual
+                List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
 
-                // Generar los asientos con el Builder
-                AsientoBuilder builder = new AsientoBuilder()
-                        .setTipoAsiento(autobus.getTipoAsiento())
-                        .setColorBase(Color.WHITE)
-                        .setColorSemiCama(Color.YELLOW)
-                        .setColorSalonCama(Color.PINK)
-                        .setColorReservado(Color.BLACK);
-
-
-                // Dibujar asientos según el piso actual
-                if (pisoActual == 1) {
-                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
-
-                } else {
-                    builder.dibujarAsientos(g, 4, 9, 46, 20, 80, 60, 10);
-
-                }
-
-                //listener para que aparezca solo una vez
-                if (!mouseListenerRegistrado) {
-                    panelAsientos.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            manejarClic(e.getX(), e.getY());
-                            repaint();
-                            System.out.println("Clic detectado en posición: (" + e.getX() + ", " + e.getY() + ")");
-                        }
-                    });
-                    mouseListenerRegistrado = true; // Evitar que se registre nuevamente
-                }
-
+                // Dibujar los asientos utilizando el método rediseñado
+                renderer.dibujarAsientos(g, asientosActuales, TAMANO_ASIENTO);
             }
         };
 
@@ -112,7 +83,9 @@ public class SeleccionAsientosVentana extends JFrame {
         panelPrincipal.add(panelAsientos);
         add(panelPrincipal);
     }
-
+    public void setPisoActual(int pisoActual) {
+        this.pisoActual = pisoActual;
+    }
 
     // Método que se activa al presionar el botón de cambio de piso
     private void cambiarDePiso() {
@@ -164,7 +137,7 @@ public class SeleccionAsientosVentana extends JFrame {
         }
         // Establece el color de los asientos reservados
         public AsientoBuilder setColorReservado(Color colorReservado) {
-            this.colorSemiCama = colorReservado;
+            this.colorReservado = colorReservado;
             return this;
         }
 
@@ -191,7 +164,7 @@ public class SeleccionAsientosVentana extends JFrame {
 
     private void manejarClic(int x, int y) {
         // Obtener la lista de asientos del piso actual
-        List<Asiento> asientosActuales = (pisoActual == 1) ? asientosPrimerPiso : asientosSegundoPiso;
+        List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
 
         for (Asiento asiento : asientosActuales) {
             // Verificar si el clic ocurrió dentro de las coordenadas del asiento
