@@ -24,7 +24,6 @@ public class Asiento {
      */
     public Asiento(int numero, CategoriaAsiento categoria, int x, int y) {
         this.numero = numero;
-        this.estadoReserva = false;
         this.categoria = categoria;
         this.precio = categoria.getPrecio();
         this.x = x;
@@ -39,6 +38,7 @@ public class Asiento {
     public int getNumero() {
         return numero;
     }
+
 
     /**
      * Verifica si el asiento está reservado.
@@ -136,6 +136,7 @@ public class Asiento {
         return ocupado;
     }
 
+
     /**
      * Verifica si el asiento está seleccionado.
      *
@@ -155,6 +156,7 @@ public class Asiento {
     }
 
 
+
     /**
      * Devuelve una representación en cadena del asiento, incluyendo su número,
      * categoría, precio y estado de reserva.
@@ -164,7 +166,6 @@ public class Asiento {
 
     @Override
     public String toString() {
-        return "Asiento " + numero + " (" + categoria + ", $" + precio + ") - " +
-                (estadoReserva ? "Reservado" : "Disponible");
+        return "Asiento " + numero + " (" + categoria + ", $" + precio + ")";
     }
 }
