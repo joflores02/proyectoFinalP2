@@ -5,11 +5,22 @@ import Controlador.SistemaDeReserva;
 import javax.swing.*;
 import java.awt.*;
 
-
+/**
+ * VentanaIngresoSistema es un panel personalizado que se utiliza como la pantalla inicial del sistema.
+ * Contiene un botón de ingreso y un fondo visual con texto de bienvenida.
+ * Esta clase se encarga de dibujar una imagen de fondo, personalizar el diseño del botón de ingreso
+ * y mostrar un mensaje de bienvenida al usuario.
+ */
 public class VentanaIngresoSistema extends JPanel {
     private JButton botonIngresar;
     private Image fondo;
 
+
+    /**
+     * Constructor que inicializa el panel, el botón de ingreso y configura el fondo.
+     * Carga una imagen de fondo, define el diseño de la ventana y crea el botón de ingreso
+     * con un diseño personalizado.
+     */
     public VentanaIngresoSistema() {
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("/Autobus-Image.jpg"));
         fondo = imageIcon.getImage();
@@ -53,11 +64,21 @@ public class VentanaIngresoSistema extends JPanel {
         add(botonIngresar);
     }
 
-    // Getter para acceder al botón desde el controlador
+    /**
+     * Getter para acceder al botón de ingreso desde el controlador.
+     *
+     * @return El botón de ingreso
+     */
     public JButton getBotonIngresar() {
         return botonIngresar;
     }
 
+    /**
+     * Método que dibuja el fondo y el texto de bienvenida en el panel.
+     * Se utiliza para personalizar la apariencia de la ventana de ingreso.
+     *
+     * @param g El objeto Graphics utilizado para pintar el componente
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -83,6 +104,12 @@ public class VentanaIngresoSistema extends JPanel {
         g.drawString(texto, x, y - 65);
     }
 
+    /**
+     * Método que crea la ventana principal para el ingreso al sistema.
+     * Configura las propiedades de la ventana, como el tamaño y el comportamiento de cierre.
+     *
+     * @return La ventana creada con la configuración adecuada
+     */
     public JFrame crearVentana() {
         JFrame ventanaIngreso = new JFrame("Ventana de Ingreso al Sistema");
         ventanaIngreso.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
