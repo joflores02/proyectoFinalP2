@@ -19,10 +19,10 @@ import Vista.AutobusRenderer;
 public class SeleccionAsientosVentana extends JFrame {
     private final int TAMANO_ASIENTO = 50;
     private JPanel panelAsientos;
+    private JButton btnConfirmar;
     private JButton btnCambiarPiso;
     private int pisoActual;  // Variable para controlar el piso actual
     private AutobusRenderer renderer = new AutobusRenderer();
-    private boolean mouseListenerRegistrado = false;
     private Autobus autobus;
 
     public static Set<Asiento> asientosReservados = new HashSet<>();
@@ -41,22 +41,8 @@ public class SeleccionAsientosVentana extends JFrame {
         panelPrincipal.setBackground(new Color(0xF2F2F6));
         panelPrincipal.setLayout(null);
 
-
-
         // Subpanel para el diseño del autobús
         panelAsientos = new JPanel() {
-
-            protected void inicializarMouseListener() {
-                panelAsientos.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        manejarClic(e.getX(), e.getY());
-                        repaint();  // Forzar el repintado después de manejar el clic
-                        System.out.println("Clic detectado en posición: (" + e.getX() + ", " + e.getY() + ")");
-                    }
-                });
-            }
-
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -68,9 +54,17 @@ public class SeleccionAsientosVentana extends JFrame {
                 renderer.dibujarAsientos(g, asientosActuales, TAMANO_ASIENTO);
             }
         };
-
         panelAsientos.setBackground(Color.WHITE);
         panelAsientos.setBounds(60, 50, 980, 380);
+
+        // MouseListener para manejar click en asientos
+        panelAsientos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                manejarClic(e.getX(), e.getY());
+                repaint();  // Forzar el repintado después de manejar el clic
+            }
+        });
 
         // Agregar el botón de cambio de piso si el autobús tiene dos pisos
         if (autobus.getNumPisos() > 1) {
@@ -79,12 +73,14 @@ public class SeleccionAsientosVentana extends JFrame {
             btnCambiarPiso.addActionListener(e -> cambiarDePiso());
             panelPrincipal.add(btnCambiarPiso);
         }
+        // Botón para confirmar la reserva
+        btnConfirmar = new JButton("Confirmar Reserva");
+        btnConfirmar.setBounds(860, 500, 150, 40);
+        btnConfirmar.addActionListener(e -> abrirVentanaConfirmacion());
+        panelPrincipal.add(btnConfirmar);
 
         panelPrincipal.add(panelAsientos);
         add(panelPrincipal);
-    }
-    public void setPisoActual(int pisoActual) {
-        this.pisoActual = pisoActual;
     }
 
     // Método que se activa al presionar el botón de cambio de piso
@@ -161,15 +157,29 @@ public class SeleccionAsientosVentana extends JFrame {
             }
         }
     }
+    // Método para abrir la ventana de confirmación
+    private void abrirVentanaConfirmacion() {
+        if (asientosReservados.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay asientos reservados.", "Error", JOptionPane.WARNING_MESSAGE);
+        } else {
+            ConfirmarReservaVentana dialogo = new ConfirmarReservaVentana(this);
+            dialogo.setVisible(true);
+        }
+    }
 
-    private void manejarClic(int x, int y) {
+    public void manejarClic(int x, int y) {
         // Obtener la lista de asientos del piso actual
         List<Asiento> asientosActuales = (pisoActual == 1) ? autobus.getPrimerPiso() : autobus.getSegundoPiso();
+
+        // Variables que indican si se ha hecho clic en un asiento
+        boolean clicEnAsiento = false;
 
         for (Asiento asiento : asientosActuales) {
             // Verificar si el clic ocurrió dentro de las coordenadas del asiento
             if (x >= asiento.getX() && x <= asiento.getX() + TAMANO_ASIENTO &&
                     y >= asiento.getY() && y <= asiento.getY() + TAMANO_ASIENTO) {
+
+                clicEnAsiento = true;
 
                 // Cambiar el estado del asiento
                 boolean nuevoEstado = !asiento.isOcupado();
@@ -187,8 +197,12 @@ public class SeleccionAsientosVentana extends JFrame {
 
                 // Forzar repintado
                 repaint();
-                return; // Salir del bucle después de encontrar el asiento clickeado
+                break; // Salir del bucle después de encontrar el asiento clickeado
             }
+        }
+        // Si el clic no fue sobre un asiento, se podría manejar de alguna manera, como imprimir un mensaje
+        if (!clicEnAsiento) {
+            System.out.println("Clic fuera de los asientos.");
         }
     }
 
