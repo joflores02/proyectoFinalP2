@@ -15,30 +15,13 @@ public enum CategoriaAsiento {
     SALON_CAMA(21500);
 
     /**
-     * Convierte un texto a la categoría de asiento correspondiente.
-     *
-     * @param tipo La cadena que representa el tipo de asiento (por ejemplo, "Semi-Cama" o "Salón-Cama").
-     * @return La categoría de asiento correspondiente.
-     * @throws IllegalArgumentException Si el tipo de asiento no coincide con una categoría válida.
+     * El precio asociado a la categoría de asiento.
      */
-    public static CategoriaAsiento fromString(String tipo) {
-        switch (tipo) {
-            case "Semi-Cama":
-                return SEMI_CAMA;
-            case "Salón-Cama":
-                return SALON_CAMA;
-            default:
-                throw new IllegalArgumentException("Tipo de asiento desconocido: " + tipo);
-        }}
-
-
     private final int precio;
 
-
     /**
-     * Constructor para asignar el precio a cada categoría de asiento.
-     *
-     * @param precio El precio asociado a la categoría de asiento.
+     * Constructor del enum CategoriaAsiento que asigna el precio a cada categoría.
+     * @param precio El precio del asiento correspondiente a la categoría.
      */
     CategoriaAsiento(int precio) {
         this.precio = precio;
