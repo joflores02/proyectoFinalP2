@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -258,7 +259,7 @@ public class SeleccionAutobusVentana extends JPanel {
      * @param id El ID del autobús que se desea obtener.
      * @return El autobús correspondiente al ID proporcionado, o `null` si no se encuentra.
      */
-    private Autobus obtenerAutobusPorId(String id) {
+    public Autobus obtenerAutobusPorId(String id) {
         for (Autobus autobus : autobusesFiltrados) {
             if (autobus.getId().equals(id)) { // Usar equals para comparar Strings
                 return autobus;
@@ -271,7 +272,7 @@ public class SeleccionAutobusVentana extends JPanel {
      * Realiza la búsqueda y filtra los autobuses según los criterios seleccionados por el usuario.
      *
      */
-    private void realizarBusqueda() {
+    public void realizarBusqueda() {
         String partida = (String) lugarPartida.getSelectedItem();
         String destinoSeleccionado = (String) destino.getSelectedItem();
 
@@ -315,8 +316,24 @@ public class SeleccionAutobusVentana extends JPanel {
         destino.setModel(model);
     }
 
+    public String obtenerLugarInicio(Autobus autobus) {
+        return autobus.getLugarDeInicio();
+    }
+
+    public String obtenerDestino(Autobus autobus) {
+        return autobus.getLugarDeDestino();
+    }
+
     public JButton getIrAtras() {
         return irAtras;
+    }
+
+    public List<Autobus> getAutobusesFiltrados() {
+        return autobusesFiltrados;
+    }
+
+    public List<Autobus> getAutobuses() {
+        return autobuses;
     }
 }
 

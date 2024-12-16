@@ -196,7 +196,9 @@ import javax.swing.border.Border;
 
         add(panelAsientos);
         setVisible(true);
+
     }
+
 
     /**
      * Este método se encarga de dibujar los asientos en el panel correspondiente
@@ -270,7 +272,7 @@ import javax.swing.border.Border;
      * @param y La coordenada vertical del clic en el panel de asientos.
      * @param panelAsientos El panel que contiene los asientos, el cual será redibujado después de la selección.
      */
-    private void manejarSeleccionAsiento(int x, int y, JPanel panelAsientos) {
+    public void manejarSeleccionAsiento(int x, int y, JPanel panelAsientos) {
         int xInicial = 50;
         int yInicial = 50;
         int ancho = 100;
@@ -369,6 +371,7 @@ import javax.swing.border.Border;
         actualizarPrecios();
     }
 
+
     /**
      * Cambia al siguiente piso del autobús si tiene más de un piso.
      *
@@ -378,7 +381,7 @@ import javax.swing.border.Border;
      * Si el autobús tiene más de un piso, el valor de `pisoActual` se actualiza al siguiente piso; si ya se encuentra
      * en el último piso, se regresa al primer piso.
      */
-    private void cambiarPiso() {
+    public void cambiarPiso() {
         if (autobus.getNumPisos() > 1) {
             pisoActual = (pisoActual + 1) % autobus.getNumPisos();
         } else {
@@ -388,6 +391,15 @@ import javax.swing.border.Border;
 
     }
 
+
+
+
+    /**
+     * Devuelve el piso actual que se está viendo en la interfaz.
+     */
+    public int getPisoActual(){
+        return pisoActual;
+    }
     public static void main(String[] args) {
         Horario horario2 = new Horario("02:00 PM", "08:30 PM");
         Autobus autobus1 = AutobusFactory.crearAutobus("A2", "Premium", 2, "Concepción", "Chillán", horario2);
