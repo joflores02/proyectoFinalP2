@@ -1,129 +1,97 @@
 package Modelo;
 
-import Modelo.Asiento;
-import Modelo.Horario;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * La clase Autobus representa un autobús con varios pisos y asientos.
- * Permite gestionar la reserva de asientos, la visualización de los asientos disponibles
- * y las rutas entre dos lugares.
+ * Representa un autobús con un conjunto de asientos organizados por pisos.
+ * Cada autobús tiene un identificador, número de asientos, tipo (económico o premium),
+ * número de pisos, lugar de inicio, lugar de destino y horario.
+ * Los asientos del autobús se organizan en una matriz donde cada piso tiene filas y columnas de asientos.
  */
-public class Autobus {
-
+public class Autobus implements Iterable<Asiento> {
+    private Asiento[][][] asientos;
     private String id;
     private int numAsientos;
     private String tipo;
     private int numPisos;
-    private List<Asiento> primerPiso;
-    private List<Asiento> segundoPiso;
-    private List<Asiento> asientosReservados;
-    private List<Asiento> asientos;
-    private String lugarDeInicio;  // Lugar de partida
-    private String lugarDeDestino; // Destino
+    private String lugarDeInicio;
+    private String lugarDeDestino;
     private Horario horario;
 
     /**
-     * Constructor privado para crear una nueva instancia de Autobus.
-     * @param id El identificador único del autobús.
-     * @param numAsientos El número total de asientos en el autobús.
-     * @param tipo El tipo de autobús (Económico o Premium).
-     * @param numPisos El número de pisos que tiene el autobús.
-     * @param lugarDeInicio El lugar de inicio del recorrido.
-     * @param lugarDeDestino El lugar de destino del recorrido.
-     * @param horario El horario de salida del autobús.
+     * Crea un nuevo autobús con los parámetros especificados.
+     *
+     * @param id El identificador del autobús.
+     * @param numAsientos El número total de asientos del autobús.
+     * @param tipo El tipo de autobús.
+     * @param numPisos El número de pisos del autobús.
+     * @param lugarDeInicio El lugar de inicio del autobús.
+     * @param lugarDeDestino El lugar de destino del autobús.
+     * @param horario El horario de salida y llegada del autobús.
+     * @param filasPorPiso El número de filas de asientos por piso.
+     * @param columnasPorPiso El número de columnas de asientos por piso.
      */
-    private Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario) {
+    public Autobus(String id, int numAsientos, String tipo, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario, int filasPorPiso, int columnasPorPiso) {
         this.id = id;
         this.numAsientos = numAsientos;
         this.tipo = tipo;
         this.numPisos = numPisos;
-        this.primerPiso = new ArrayList<>();
-        this.segundoPiso = new ArrayList<>();
         this.lugarDeInicio = lugarDeInicio;
         this.lugarDeDestino = lugarDeDestino;
         this.horario = horario;
-    }
+        this.asientos = new Asiento[numPisos][filasPorPiso][columnasPorPiso];
 
-    /**
-     * Inicializa los asientos del autobús para cada piso, permitiendo asignar diferentes categorías de asiento
-     * y especificando las coordenadas para su ubicación.
-     * @param categoriaPrimerPiso La categoría de los asientos en el primer piso (Semi-Cama o Salón-Cama).
-     * @param categoriaSegundoPiso La categoría de los asientos en el segundo piso (Semi-Cama o Salón-Cama).
-     * @param filas El número de filas de asientos en cada piso.
-     * @param columnas El número de columnas de asientos en cada piso.
-     * @param inicioX Coordenada X inicial para la ubicación de los asientos.
-     * @param inicioY Coordenada Y inicial para la ubicación de los asientos.
-     * @param ancho El ancho de cada asiento.
-     * @param alto El alto de cada asiento.
-     * @param espacio El espacio entre los asientos.
-     */
-    public void inicializarAsientos(CategoriaAsiento categoriaPrimerPiso, CategoriaAsiento categoriaSegundoPiso, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio) {
-        int asientosPorPiso = numAsientos / numPisos;
+        CategoriaAsiento categoriaAsiento = (tipo.equals("Económico")) ? CategoriaAsiento.SEMI_CAMA : CategoriaAsiento.SALON_CAMA;
 
-        inicializarAsientosPorPiso(primerPiso, asientosPorPiso, filas, columnas, inicioX, inicioY, ancho, alto, espacio, categoriaPrimerPiso);
-
-        if (numPisos == 2) {
-            inicializarAsientosPorPiso(segundoPiso, asientosPorPiso, filas, columnas, inicioX, inicioY, ancho, alto, espacio, categoriaSegundoPiso);
-        }
-    }
-
-    /**
-     * Inicializa los asientos de un solo piso del autobús, asignando un número de asiento y ubicaciones específicas.
-     * @param piso La lista de asientos para el piso (primer o segundo).
-     * @param asientosPorPiso El número de asientos para este piso.
-     * @param filas El número de filas de asientos.
-     * @param columnas El número de columnas de asientos.
-     * @param inicioX La coordenada X inicial para la ubicación de los asientos.
-     * @param inicioY La coordenada Y inicial para la ubicación de los asientos.
-     * @param ancho El ancho de cada asiento.
-     * @param alto El alto de cada asiento.
-     * @param espacio El espacio entre los asientos.
-     * @param categoria La categoría de asiento (Semi-Cama o Salón-Cama).
-     */
-    private void inicializarAsientosPorPiso(List<Asiento> piso, int asientosPorPiso, int filas, int columnas, int inicioX, int inicioY, int ancho, int alto, int espacio, CategoriaAsiento categoria) {
-        int numeroAsiento = 1;
-
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                if (numeroAsiento > asientosPorPiso) {
-                    return; // Detener si se alcanzó el número total de asientos para este piso
+        for (int piso = 0; piso < numPisos; piso++) {
+            for (int fila = 0; fila < filasPorPiso; fila++) {
+                for (int columna = 0; columna < columnasPorPiso; columna++) {
+                    asientos[piso][fila][columna] = new Asiento(fila, columna, categoriaAsiento);
                 }
-
-                int x = inicioX + j * (ancho + espacio);
-                int y = inicioY + i * (alto + espacio);
-
-                // Crear y agregar el asiento
-                piso.add(new Asiento(numeroAsiento, categoria, x, y));
-                numeroAsiento++;
             }
         }
-        asientos.addAll(piso);
-        if (numPisos == 2) {
-            asientos.addAll(segundoPiso);
-        }
     }
 
-
     /**
-     * Obtiene el ID del autobús.
-     * @return El ID del autobús.
+     * Obtiene el identificador del autobús.
+     * @return El identificador del autobús.
      */
     public String getId() {
         return id;
     }
 
     /**
+     * Establece el identificador del autobús.
+     *
+     * @param id El nuevo identificador del autobús.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
      * Obtiene el número total de asientos en el autobús.
-     * @return El número de asientos.
+     *
+     * @return El número de asientos en el autobús.
      */
     public int getNumAsientos() {
         return numAsientos;
     }
 
     /**
-     * Obtiene el tipo de autobús (Económico o Premium).
+     * Establece el número total de asientos en el autobús.
+     *
+     * @param numAsientos El nuevo número de asientos en el autobús.
+     */
+    public void setNumAsientos(int numAsientos) {
+        this.numAsientos = numAsientos;
+    }
+
+    /**
+     * Obtiene el tipo de autobús (económico o premium).
+     *
      * @return El tipo de autobús.
      */
     public String getTipo() {
@@ -131,131 +99,189 @@ public class Autobus {
     }
 
     /**
+     * Establece el tipo de autobús.
+     *
+     * @param tipo El nuevo tipo de autobús.
+     */
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    /**
      * Obtiene el número de pisos del autobús.
-     * @return El número de pisos.
+     *
+     * @return El número de pisos del autobús.
      */
     public int getNumPisos() {
         return numPisos;
     }
 
     /**
-     * Obtiene la lista de asientos del primer piso.
-     * @return La lista de asientos del primer piso.
+     * Establece el número de pisos del autobús.
+     *
+     * @param numPisos El nuevo número de pisos del autobús.
      */
-    public List<Asiento> getPrimerPiso() {
-        return primerPiso;
-    }
-
-    /**
-     * Obtiene la lista de asientos del segundo piso.
-     * @return La lista de asientos del segundo piso.
-     */
-    public List<Asiento> getSegundoPiso() {
-        return segundoPiso;
-    }
-
-    /**
-     * Obtiene la lista de todos los asientos del autobús.
-     * @return La lista de todos los asientos.
-     */
-    public List<Asiento> getAsientos() {
-        return asientos;
+    public void setNumPisos(int numPisos) {
+        this.numPisos = numPisos;
     }
 
     /**
      * Obtiene el lugar de inicio del autobús.
-     * @return El lugar de inicio.
+     *
+     * @return El lugar de inicio del autobús.
      */
     public String getLugarDeInicio() {
         return lugarDeInicio;
     }
 
     /**
+     * Establece el lugar de inicio del autobús.
+     *
+     * @param lugarDeInicio El nuevo lugar de inicio del autobús.
+     */
+    public void setLugarDeInicio(String lugarDeInicio) {
+        this.lugarDeInicio = lugarDeInicio;
+    }
+
+    /**
      * Obtiene el lugar de destino del autobús.
-     * @return El lugar de destino.
+     *
+     * @return El lugar de destino del autobús.
      */
     public String getLugarDeDestino() {
         return lugarDeDestino;
     }
 
     /**
+     * Establece el lugar de destino del autobús.
+     *
+     * @param lugarDeDestino El nuevo lugar de destino del autobús.
+     */
+    public void setLugarDeDestino(String lugarDeDestino) {
+        this.lugarDeDestino = lugarDeDestino;
+    }
+
+    /**
      * Obtiene el horario del autobús.
+     *
      * @return El horario del autobús.
      */
     public Horario getHorario() {
         return horario;
     }
 
-    // Métodos para verificar disponibilidad y reservas
-
     /**
-     * Verifica si hay asientos disponibles en el piso indicado.
-     * @param piso El número de piso (1 o 2).
-     * @return true si hay asientos disponibles, false en caso contrario.
+     * Establece el horario del autobús.
+     *
+     * @param horario El nuevo horario del autobús.
      */
-    public boolean verificarDisponibilidad(int piso) {
-        return (piso == 1 ? primerPiso : segundoPiso).stream().anyMatch(Asiento::disponibilidadAsiento);
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
     /**
-     * Reserva un asiento específico en el piso indicado.
-     * @param numeroAsiento El número del asiento a reservar.
-     * @param piso El número de piso (1 o 2).
-     * @return true si la reserva fue exitosa, false si el asiento ya está ocupado.
-     * @throws IllegalArgumentException Si el asiento no existe en el piso indicado.
+     * Obtiene una lista de todos los asientos del autobús.
+     *
+     * @return Una lista de todos los asientos del autobús.
      */
-    public boolean reservarAsiento(int numeroAsiento, int piso) {
-        List<Asiento> asientos = (piso == 1) ? primerPiso : segundoPiso;
+    public List<Asiento> getAsientos() {
+        List<Asiento> listaAsientos = new ArrayList<>();
+        for (Asiento asiento : this) {
+            listaAsientos.add(asiento);
+        }
+        return listaAsientos;
+    }
 
-        for (Asiento asiento : asientos) {
-            if (asiento.getNumero() == numeroAsiento) {
-                if (asiento.disponibilidadAsiento()) {
-                    asiento.reservar();
-                    return true;
-                } else {
-                    return false;
+    /**
+     * Obtiene una lista de los asientos de un piso específico.
+     *
+     * @param piso El número de piso para obtener los asientos.
+     * @return Una lista de los asientos del piso especificado.
+     */
+    public List<Asiento> getAsientosPorPiso(int piso) {
+        List<Asiento> listaAsientos = new ArrayList<>();
+        if (piso >= 0 && piso < numPisos) {
+            for (int fila = 0; fila < asientos[piso].length; fila++) {
+                for (int columna = 0; columna < asientos[piso][fila].length; columna++) {
+                    listaAsientos.add(asientos[piso][fila][columna]);
                 }
             }
         }
-
-        throw new IllegalArgumentException("El asiento no existe en el piso " + piso + ".");
+        return listaAsientos;
     }
 
     /**
-     * Obtiene el tipo de asiento disponible según el tipo de autobús y número de pisos.
-     * @return El tipo de asiento (Semi-Cama o Salón-Cama).
+     * Obtiene un asiento específico según su piso, fila y columna.
+     *
+     * @param piso El número de piso.
+     * @param fila El número de fila.
+     * @param columna El número de columna.
+     * @return El asiento especificado, o null si no existe.
      */
-    public String getTipoAsiento() {
-        // Retorna el tipo de asiento basado en el tipo de autobús y el número de pisos
-        if (numPisos == 1) {
-            return "Semi-Cama"; // Para un piso, asientos semi-cama
-        } else {
-            return tipo.equals("Económico") ? "Semi-Cama" : "Salón-Cama"; // Dependiendo del tipo de autobús
+    public Asiento obtenerAsiento(int piso, int fila, int columna) {
+        if (piso >= 0 && piso < numPisos && fila >= 0 && fila < asientos[piso].length && columna >= 0 && columna < asientos[piso][fila].length) {
+            return asientos[piso][fila][columna];
         }
+        return null;
     }
 
-    public static class Factory {
-        public static Autobus crearAutobus(String id, int numPisos, String lugarDeInicio, String lugarDeDestino, Horario horario, String categoria) {
-            if (numPisos == 1) {
-                // Si la categoría es "Premium", se crea un autobús premium de 1 piso
-                if (categoria.equals("Premium")) {
-                    return new Autobus(id, 38, "Premium", 1, lugarDeInicio, lugarDeDestino, horario);
-                } else if (categoria.equals("Económico")) {
-                    return new Autobus(id, 38, "Económico", 1, lugarDeInicio, lugarDeDestino, horario);
-                } else {
-                    throw new IllegalArgumentException("Categoría no soportada para autobuses de 1 piso: " + categoria);
-                }
-            } else if (numPisos == 2) {
-                if (categoria.equals("Económico")) {
-                    return new Autobus(id, 76, "Económico", 2, lugarDeInicio, lugarDeDestino, horario);
-                } else if (categoria.equals("Premium")) {
-                    return new Autobus(id, 76, "Premium", 2, lugarDeInicio, lugarDeDestino, horario);
-                } else {
-                    throw new IllegalArgumentException("Categoría no soportada para autobuses de 2 pisos: " + categoria);
-                }
-            } else {
-                throw new IllegalArgumentException("Número de pisos no soportado: " + numPisos);
+    /**
+     * Obtiene el precio de un asiento según el tipo de autobús.
+     *
+     * @return El precio del asiento en el autobús.
+     */
+    public int obtenerPrecio() {
+        return (tipo.equals("Económico")) ? CategoriaAsiento.SEMI_CAMA.getPrecio() : CategoriaAsiento.SALON_CAMA.getPrecio();
+    }
+
+    /**
+     * Obtiene una lista de los asientos seleccionados por el usuario.
+     *
+     * @return Una lista de los asientos seleccionados.
+     */
+    public List<Asiento> obtenerAsientosSeleccionados() {
+        List<Asiento> asientosSeleccionados = new ArrayList<>();
+        for (Asiento asiento : this) {
+            if (asiento.isSeleccionado()) {
+                asientosSeleccionados.add(asiento);
             }
+        }
+        return asientosSeleccionados;
+    }
+
+    /**
+     * Iterador para recorrer los asientos del autobús.
+     *
+     * @return Un iterador para los asientos del autobús.
+     */
+    @Override
+    public Iterator<Asiento> iterator() {
+        return new AsientoIterator();
+    }
+
+    private class AsientoIterator implements Iterator<Asiento> {
+        private int piso = 0;
+        private int fila = 0;
+        private int columna = 0;
+
+        @Override
+        public boolean hasNext() {
+            return piso < numPisos && fila < asientos[piso].length && columna < asientos[piso][fila].length;
+        }
+
+        @Override
+        public Asiento next() {
+            Asiento asiento = asientos[piso][fila][columna];
+            columna++;
+            if (columna == asientos[piso][fila].length) {
+                columna = 0;
+                fila++;
+                if (fila == asientos[piso].length) {
+                    fila = 0;
+                    piso++;
+                }
+            }
+            return asiento;
         }
     }
 }

@@ -2,6 +2,7 @@ package Vista;
 
 import Modelo.Autobus;
 
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -10,11 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * Panel para la ventana de selección de autobuses, que permite buscar y mostrar una lista de autobuses
- * según el lugar de partida y destino. También permite seleccionar un autobús para la elección de asientos.
+ * Clase que representa la ventana para seleccionar un autobús.
+ * Permite al usuario buscar autobuses disponibles y ver detalles relacionados.
  */
 public class SeleccionAutobusVentana extends JPanel {
     private JButton irAtras;
@@ -28,7 +30,8 @@ public class SeleccionAutobusVentana extends JPanel {
     private List<Autobus> autobusesFiltrados = new ArrayList<>(); // Lista para almacenar los autobuses filtrados
 
     /**
-     * Constructor que inicializa el panel y sus componentes.
+     * Constructor de la clase SeleccionAutobusVentana.
+     * Configura la disposición de los paneles y componentes de la ventana.
      */
     public SeleccionAutobusVentana() {
         setLayout(new BorderLayout());
@@ -53,9 +56,9 @@ public class SeleccionAutobusVentana extends JPanel {
     }
 
     /**
-     * Crea el panel superior que contiene el botón "Atrás".
+     * Crea el panel superior con el botón "Atrás".
      *
-     * @return El panel superior.
+     * @return El panel superior con el botón configurado.
      */
     private JPanel crearPanelSuperior() {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -95,10 +98,13 @@ public class SeleccionAutobusVentana extends JPanel {
     }
 
     /**
-     * Crea el panel de búsqueda que contiene los campos de selección de origen y destino,
-     * así como el botón de búsqueda.
+     * Crea el panel de búsqueda que contiene los componentes para seleccionar el origen, destino
+     * y un botón para realizar la búsqueda de autobuses.
      *
-     * @return El panel de búsqueda.
+     * El panel incluye dos comboboxes para seleccionar el lugar de partida y el destino, junto con
+     * un botón "BUSCAR" que, al ser presionado, ejecuta la acción de búsqueda.
+     *
+     * @return El panel de búsqueda configurado con los componentes correspondientes.
      */
     private JPanel crearPanelBusqueda() {
         JPanel panelBusqueda = new JPanel();
@@ -167,10 +173,15 @@ public class SeleccionAutobusVentana extends JPanel {
         return panelBusqueda;
     }
 
+
     /**
-     * Crea el panel que contiene la tabla con los detalles de los autobuses.
+     * Crea y configura un panel con una tabla que muestra los detalles de los autobuses disponibles segun filtro.
+     * La tabla contiene información sobre el ID, origen, destino, hora, tipo y número de pisos de cada autobús.
      *
-     * @return El panel de detalles del autobús.
+     * Además, se agrega un listener a la tabla para permitir la selección de un autobús mediante un doble clic,
+     * lo que abrirá una ventana para seleccionar asientos en el autobús elegido.
+     *
+     * @return El panel con la tabla de detalles de los autobuses.
      */
     private JPanel crearPanelDetalles() {
         JPanel detallesAutobus = new JPanel(new BorderLayout());
@@ -178,7 +189,7 @@ public class SeleccionAutobusVentana extends JPanel {
         detallesAutobus.setBackground(Color.WHITE);
 
         // Establecer las columnas de la tabla
-        String[] columnas = {"ID", "Origen", "Destino", "Hora", "Tipo"};
+        String[] columnas = {"ID", "Origen", "Destino", "Hora", "Tipo", "N° Pisos"};
 
         tablaSeleccionAutobus = new DefaultTableModel(new Object[0][0], columnas) {
             @Override
@@ -218,7 +229,7 @@ public class SeleccionAutobusVentana extends JPanel {
 
                     if (autobusSeleccionado != null) {
                         // Crear la ventana de selección de asientos y pasar el autobús seleccionado
-                        SeleccionAsientosVentana ventana = new SeleccionAsientosVentana(autobusSeleccionado); // Asumiendo que el constructor acepta un Autobus
+                        VistaSeleccionAsientos ventana = new VistaSeleccionAsientos(autobusSeleccionado);
                         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         ventana.setVisible(true);  // Abrir la ventana
 
@@ -233,7 +244,6 @@ public class SeleccionAutobusVentana extends JPanel {
             }
         });
 
-
         detallesAutobus.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
         return detallesAutobus;
@@ -241,12 +251,15 @@ public class SeleccionAutobusVentana extends JPanel {
 
 
     /**
-     * Obtiene un autobús según su ID.
+     * Obtiene un autobús a partir de su ID.
      *
-     * @param id El ID del autobús.
-     * @return El autobús correspondiente al ID proporcionado, o null si no se encuentra.
+     * Este método recorre la lista de autobuses filtrados y compara el ID de cada autobús con el ID proporcionado.
+     * Si encuentra un autobús cuyo ID coincide, lo devuelve. de lo contrario, retorna `null`.
+     *
+     * @param id El ID del autobús que se desea obtener.
+     * @return El autobús correspondiente al ID proporcionado, o `null` si no se encuentra.
      */
-    private Autobus obtenerAutobusPorId(String id) {
+    public Autobus obtenerAutobusPorId(String id) {
         for (Autobus autobus : autobusesFiltrados) {
             if (autobus.getId().equals(id)) { // Usar equals para comparar Strings
                 return autobus;
@@ -256,10 +269,10 @@ public class SeleccionAutobusVentana extends JPanel {
     }
 
     /**
-     * Realiza la búsqueda de los autobuses según el origen y el destino seleccionados,
-     * y actualiza la tabla con los autobuses filtrados.
+     * Realiza la búsqueda y filtra los autobuses según los criterios seleccionados por el usuario.
+     *
      */
-    private void realizarBusqueda() {
+    public void realizarBusqueda() {
         String partida = (String) lugarPartida.getSelectedItem();
         String destinoSeleccionado = (String) destino.getSelectedItem();
 
@@ -276,58 +289,51 @@ public class SeleccionAutobusVentana extends JPanel {
     }
 
     /**
-     * Actualiza la tabla con los autobuses filtrados. Este método limpia la tabla actual
-     * y luego agrega una nueva fila por cada autobús en la lista filtrada, mostrando
-     * su ID, lugar de inicio, lugar de destino, horario y tipo.
+     * Actualiza la tabla con los autobuses filtrados.
+     *
      */
     private void actualizarTabla() {
         tablaSeleccionAutobus.setRowCount(0); // Limpiar la tabla
         for (Autobus autobus : autobusesFiltrados) {
             tablaSeleccionAutobus.addRow(new Object[]{autobus.getId(), autobus.getLugarDeInicio(),
-                    autobus.getLugarDeDestino(), autobus.getHorario(), autobus.getTipo()});
+                    autobus.getLugarDeDestino(), autobus.getHorario(), autobus.getTipo(), autobus.getNumPisos()});
         }
     }
 
-    /**
-     * Establece la lista de autobuses disponibles para la selección. Este método
-     * permite actualizar la lista interna de autobuses que se mostrará en la interfaz.
-     *
-     * @param listaAutobuses La lista de autobuses a establecer.
-     */
     public void setAutobuses(List<Autobus> listaAutobuses) {
         this.autobuses = listaAutobuses;
     }
 
-    /**
-     * Establece los lugares de inicio disponibles para la búsqueda de autobuses. Este
-     * método actualiza el modelo de datos del combo box de lugares de inicio con la lista
-     * proporcionada.
-     *
-     * @param lugaresInicio La lista de lugares de inicio disponibles.
-     */
+    // Método para establecer los lugares de inicio
     public void setLugaresInicio(List<String> lugaresInicio) {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(lugaresInicio.toArray(new String[0]));
         lugarPartida.setModel(model);
     }
 
-    /**
-     * Establece los destinos disponibles para la búsqueda de autobuses. Este método
-     * actualiza el modelo de datos del combo box de destinos con la lista proporcionada.
-     *
-     * @param destinos La lista de destinos disponibles.
-     */
+    // Método para establecer los destinos
     public void setDestinos(List<String> destinos) {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(destinos.toArray(new String[0]));
         destino.setModel(model);
     }
 
-    /**
-     * Obtiene el botón de "Ir Atrás" que permite regresar a la pantalla anterior.
-     *
-     * @return El botón "Ir Atrás".
-     */
+    public String obtenerLugarInicio(Autobus autobus) {
+        return autobus.getLugarDeInicio();
+    }
+
+    public String obtenerDestino(Autobus autobus) {
+        return autobus.getLugarDeDestino();
+    }
+
     public JButton getIrAtras() {
         return irAtras;
+    }
+
+    public List<Autobus> getAutobusesFiltrados() {
+        return autobusesFiltrados;
+    }
+
+    public List<Autobus> getAutobuses() {
+        return autobuses;
     }
 }
 

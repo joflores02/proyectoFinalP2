@@ -1,85 +1,87 @@
-
-import Modelo.Asiento;
-import Modelo.Autobus;
-import Modelo.CategoriaAsiento;
-import Modelo.Horario;
-import org.junit.jupiter.api.BeforeEach;
+import Modelo.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AutobusTest {
-    private Autobus autobus;
-
-    @BeforeEach
-    public void setUp() {
-        // Crear un autobús de prueba con 2 pisos, 76 asientos, y diferentes categorías
-        Horario horario = new Horario("02:00 PM", "08:30 PM");
-        autobus = Autobus.Factory.crearAutobus("A1", 2, "Concepción", "Santiago", horario, "Premium");
-    }
-
-
+class AutobusTest {
     @Test
-    public void testReservaDeAsientos() {
-        // Reservar un asiento del primer piso
-        Asiento asientoPrimerPiso = autobus.getPrimerPiso().get(0);
-        asientoPrimerPiso.setOcupado(true);
+    public void testCrearAutobus() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobus = new Autobus("A123", 32, "Económico", 1, "Santiago", "Valparaíso", horario, 4, 8);
 
-        // Verificar que el asiento esté reservado
-        assertTrue(asientoPrimerPiso.isOcupado(), "El asiento del primer piso debería estar reservado");
-
-        // Liberar el asiento
-        asientoPrimerPiso.setOcupado(false);
-
-        // Verificar que el asiento esté libre
-        assertFalse(asientoPrimerPiso.isOcupado(), "El asiento del primer piso debería estar libre");
-    }
-
-    @Test
-    public void testCategoriasDeAsientos() {
-        // Verificar que todos los asientos del primer piso tienen la categoría correcta
-        for (Asiento asiento : autobus.getPrimerPiso()) {
-            assertEquals(CategoriaAsiento.SEMI_CAMA, asiento.getCategoria(), "El asiento del primer piso debería ser Semi-Cama");
-        }
-
-        // Verificar que todos los asientos del segundo piso tienen la categoría correcta
-        for (Asiento asiento : autobus.getSegundoPiso()) {
-            assertEquals(CategoriaAsiento.SALON_CAMA, asiento.getCategoria(), "El asiento del segundo piso debería ser Salón-Cama");
-        }
-    }
-
-    @Test
-    void testCrearAutobus() {
-        Horario horario = new Horario("08:00 AM", "11:30 PM");
-        Horario horario2 = new Horario("02:00 PM", "08:30 PM");
-        Horario horario3 = new Horario("09:00 AM", "11:00 PM");
-        Horario horario4 = new Horario("10:00 AM", "06:30 PM");
-        Autobus autobus = Autobus.Factory.crearAutobus("A1", 1, "Santiago", "Valparaíso", horario, "Económico");
-
-        // Verificar que los atributos del autobús sean correctos
-        assertEquals("A1", autobus.getId());
-        assertEquals(38, autobus.getNumAsientos());
+        assertEquals("A123", autobus.getId());
+        assertEquals(32, autobus.getNumAsientos());
         assertEquals("Económico", autobus.getTipo());
         assertEquals(1, autobus.getNumPisos());
         assertEquals("Santiago", autobus.getLugarDeInicio());
         assertEquals("Valparaíso", autobus.getLugarDeDestino());
         assertEquals(horario, autobus.getHorario());
     }
+
     @Test
-    void testGetTipoAsiento() {
-        Horario horario = new Horario("08:00 AM", "11:30 PM");
-        Autobus autobus = Autobus.Factory.crearAutobus("A5", 1, "Santiago", "Valparaíso", horario, "Premium");
+    public void testObtenerAsientosPorPiso() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobus = new Autobus("A123", 40, "Económico", 2, "Santiago", "Valparaíso", horario, 10, 4);
 
-        // Obtener el tipo de asiento basado en el tipo de autobús
-        assertEquals("Semi-Cama", autobus.getTipoAsiento()); // Autobús de 1 piso y tipo Premium
-
-        Autobus autobus2 = Autobus.Factory.crearAutobus("A6", 2, "Santiago", "Valparaíso", horario, "Económico");
-        assertEquals("Semi-Cama", autobus2.getTipoAsiento()); // Autobús de 2 pisos y tipo Económico
+        List<Asiento> asientosPiso1 = autobus.getAsientosPorPiso(1);
+        assertNotNull(asientosPiso1);
+        assertEquals(40, asientosPiso1.size());
     }
 
+    @Test
+    public void testObtenerAsiento() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobus = new Autobus("A123", 40, "Económico", 2, "Santiago", "Valparaíso", horario, 10, 4);
 
+        Asiento asiento = autobus.obtenerAsiento(0, 0, 0);
+        assertNotNull(asiento);
+        assertEquals(0, asiento.getFila());
+        assertEquals(0, asiento.getColumna());
+    }
 
+    @Test
+    public void testObtenerPrecio() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobusEconómico = new Autobus("A123", 40, "Económico", 2, "Santiago", "Valparaíso", horario, 10, 4);
+        Autobus autobusPremium = new Autobus("B456", 40, "Premium", 2, "Santiago", "Valparaíso", horario, 10, 4);
+
+        assertEquals(CategoriaAsiento.SEMI_CAMA.getPrecio(), autobusEconómico.obtenerPrecio());
+        assertEquals(CategoriaAsiento.SALON_CAMA.getPrecio(), autobusPremium.obtenerPrecio());
+    }
+
+    @Test
+    public void testObtenerAsientosSeleccionados() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobus = new Autobus("A123", 40, "Económico", 2, "Santiago", "Valparaíso", horario, 10, 4);
+
+        Asiento asiento1 = autobus.obtenerAsiento(0, 0, 0);
+        Asiento asiento2 = autobus.obtenerAsiento(1, 1, 1);
+        asiento1.seleccionar();
+        asiento2.seleccionar();
+
+        List<Asiento> asientosSeleccionados = autobus.obtenerAsientosSeleccionados();
+        assertEquals(2, asientosSeleccionados.size());
+        assertTrue(asientosSeleccionados.contains(asiento1));
+        assertTrue(asientosSeleccionados.contains(asiento2));
+    }
+
+    @Test
+    public void testIteradorAsientos() {
+        Horario horario = new Horario("2024-12-15 08:00", "2024-12-15 10:00");
+        Autobus autobus = new Autobus("A123", 32, "Económico", 1, "Santiago", "Valparaíso", horario, 4, 8);
+
+        Iterator<Asiento> iterador = autobus.iterator();
+        int contador = 0;
+
+        while (iterador.hasNext()) {
+            iterador.next();
+            contador++;
+        }
+
+        assertEquals(32, contador);
+    }
 
 }

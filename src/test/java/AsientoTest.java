@@ -1,34 +1,70 @@
 import Modelo.Asiento;
 import Modelo.CategoriaAsiento;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AsientoTest {
+class AsientoTest {
 
-    @Test
-    public void DisponibilidadInicial() {
-        Asiento asiento = new Asiento(1, CategoriaAsiento.SEMI_CAMA, 0, 0);
-        assertTrue(asiento.disponibilidadAsiento());
+    private Asiento asiento;
+
+    @BeforeEach
+    void setUp() {
+        // Inicializa un asiento antes de cada prueba
+        asiento = new Asiento(1, 2, CategoriaAsiento.SALON_CAMA);
     }
 
     @Test
-    public void ReservarAsientoDisponible() {
-        Asiento asiento = new Asiento(1, CategoriaAsiento.SEMI_CAMA, 1, 1);
-
-        boolean resultado = asiento.reservar();
-        assertTrue(resultado);
-        assertFalse(asiento.disponibilidadAsiento());
+    void testConstructor() {
+        // Verifica que el asiento se inicializa correctamente
+        assertEquals(1, asiento.getFila());
+        assertEquals(2, asiento.getColumna());
+        assertTrue(asiento.isDisponible());
+        assertFalse(asiento.isSeleccionado());
+        assertFalse(asiento.isReservado());
+        assertEquals(CategoriaAsiento.SALON_CAMA, asiento.getCategoriaAsiento());
     }
 
     @Test
-    public void ReservarAsientoOcupado() {
-        Asiento asiento = new Asiento(1, CategoriaAsiento.SEMI_CAMA,2, 2);
+    void testSeleccionarAsientoDisponible() {
+        // Verifica que un asiento disponible se pueda seleccionar
+        asiento.seleccionar();
+        assertTrue(asiento.isSeleccionado());
+        assertTrue(asiento.isDisponible());
+        assertFalse(asiento.isReservado());
+    }
 
+    @Test
+    void testSeleccionarAsientoReservado() {
+        // Verifica que un asiento reservado no se pueda seleccionar
         asiento.reservar();
-        boolean resultado = asiento.reservar();
-        assertFalse(resultado);
+        asiento.seleccionar();
+        assertFalse(asiento.isSeleccionado());
     }
-    @Test
-    public void imprimirListaReserva(){}
 
+    @Test
+    void testDeseleccionarAsiento() {
+        // Verifica que se pueda deseleccionar un asiento
+        asiento.seleccionar();
+        asiento.deseleccionar();
+        assertFalse(asiento.isSeleccionado());
+    }
+
+    @Test
+    void testReservarAsientoDisponible() {
+        // Verifica que un asiento disponible se pueda reservar
+        asiento.reservar();
+        assertTrue(asiento.isReservado());
+        assertFalse(asiento.isDisponible());
+        assertFalse(asiento.isSeleccionado());
+    }
+
+    @Test
+    void testReservarAsientoYaReservado() {
+        // Verifica que no cambie el estado al intentar reservar un asiento ya reservado
+        asiento.reservar();
+        asiento.reservar();
+        assertTrue(asiento.isReservado());
+        assertFalse(asiento.isDisponible());
+    }
 }
